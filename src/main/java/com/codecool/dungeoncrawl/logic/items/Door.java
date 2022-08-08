@@ -3,7 +3,7 @@ package com.codecool.dungeoncrawl.logic.items;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 
-public class Door extends Actor {
+public class Door extends Item {
 
     public Door(Cell cell) {
         super(cell);

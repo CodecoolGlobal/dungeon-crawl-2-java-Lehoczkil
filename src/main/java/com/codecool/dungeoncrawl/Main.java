@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl;
 
+import com.codecool.dungeoncrawl.database.Manager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
@@ -24,6 +25,7 @@ public class Main extends Application {
     Label healthLabel = new Label();
 
     public static void main(String[] args) {
+        new Manager().setup();
         launch(args);
     }
 

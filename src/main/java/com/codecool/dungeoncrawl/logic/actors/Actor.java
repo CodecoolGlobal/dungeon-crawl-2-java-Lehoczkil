@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.Drawable;
+import com.codecool.dungeoncrawl.logic.items.Door;
 
 public abstract class Actor implements Drawable {
     private Cell cell;
@@ -18,6 +19,11 @@ public abstract class Actor implements Drawable {
                 if (!cell.getActor().getTileName().equals("skeleton")) {
                     return true;
                 }
+            } else if (cell.getItem() != null) {
+                if (cell.getItem().getTileName().equals("closed door")) {
+                    return false;
+                }
+                return true;
             } else {
                 return true;
             }

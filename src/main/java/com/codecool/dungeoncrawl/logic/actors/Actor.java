@@ -8,19 +8,38 @@ import com.codecool.dungeoncrawl.logic.items.Door;
 public abstract class Actor implements Drawable {
 
     protected Cell cell;
-    private int health = 50;
+    protected boolean isAlive = true;
+    protected int health = 10;
 
     public Actor(Cell cell) {
         this.cell = cell;
         this.cell.setActor(this);
     }
 
+    public abstract void attack(Actor enemy);
+
+    public void takeDamage(int damage) {
+        health -= damage;
+        if (health <= 0) {
+            isAlive = false;
+        }
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
     protected boolean isValidMove(Cell cell) {
         if (cell.getTileName().equals("floor")) {
             if (cell.getActor() != null) {
-                return !cell.getActor().getTileName().equals("skeleton");
+                if (!cell.getActor().getTileName().equals("skeleton")) {
+                    return true;
+                }
             } else if (cell.getItem() != null) {
-                return !cell.getItem().getTileName().equals("closed door");
+                if (cell.getItem().getTileName().equals("closed door")) {
+                    return false;
+                }
+                return true;
             } else {
                 return true;
             }

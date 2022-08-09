@@ -7,6 +7,9 @@ import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
 public class Player extends Actor {
+
+    private boolean hasSword = false;
+
     public Player(Cell cell) {
         super(cell);
     }
@@ -22,6 +25,15 @@ public class Player extends Actor {
     public void pickUp(Item item) {
         Manager.addItem(item.getTileName());
         if (item.getTileName().equals("sword")) Tiles.UpdatePlayerImage();
+    }
+
+    @Override
+    public void attack(Actor enemy) {
+        if (hasSword) {
+            enemy.takeDamage(5);
+        } else {
+            enemy.takeDamage(3);
+        }
     }
 
     @Override

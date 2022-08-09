@@ -44,21 +44,22 @@ public class Main extends Application {
 
     private void onKeyPressed(KeyEvent keyEvent) {
         Player player = map.getPlayer();
+        boolean moved = false;
         switch (keyEvent.getCode()) {
             case UP:
-                player.move(0, -1);
+                moved = player.move(0, -1);
                 refresh();
                 break;
             case DOWN:
-                player.move(0, 1);
+                moved = player.move(0, 1);
                 refresh();
                 break;
             case LEFT:
-                player.move(-1, 0);
+                moved = player.move(-1, 0);
                 refresh();
                 break;
             case RIGHT:
-                player.move(1,0);
+                moved = player.move(1,0);
                 refresh();
                 break;
             case F:
@@ -66,8 +67,17 @@ public class Main extends Application {
                     player.pickUp(player.getCell().getItem());
                     player.getCell().setItem(null);
                 }
+                Scene scene = Display.generateGameWindow(healthLabel, canvas);
+                scene.setOnKeyPressed(this::onKeyPressed);
+                Display.displayGame(primaryStage, scene);
                 refresh();
                 break;
+        }
+        if (!moved) {
+            Scene scene = Display.generateGameWindow(healthLabel, canvas);
+            scene.setOnKeyPressed(this::onKeyPressed);
+            Display.displayGame(primaryStage, scene);
+            refresh();
         }
     }
 
@@ -87,9 +97,5 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
-
-        Scene scene = Display.generateGameWindow(healthLabel, canvas);
-        scene.setOnKeyPressed(this::onKeyPressed);
-        Display.displayGame(primaryStage, scene);
     }
 }

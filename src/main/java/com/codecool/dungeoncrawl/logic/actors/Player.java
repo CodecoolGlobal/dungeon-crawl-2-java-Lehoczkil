@@ -25,7 +25,7 @@ public class Player extends Actor {
     }
 
     @Override
-    public void move(int dx, int dy) {
+    public boolean move(int dx, int dy) {
         Cell nextCell = this.cell.getNeighbor(dx, dy);
         if (isValidMove(nextCell)) {
             cell.setActor(null);
@@ -34,6 +34,8 @@ public class Player extends Actor {
         } else if (nextCell.getItem() != null && nextCell.getItem().getTileName() == "closed door" && Manager.hasItem("key")) {
             ((Door) nextCell.getItem()).setOpen();
             Manager.decrementItem("key");
+            return false;
         }
+        return true;
     }
 }

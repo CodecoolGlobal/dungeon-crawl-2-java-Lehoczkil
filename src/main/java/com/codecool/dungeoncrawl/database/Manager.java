@@ -99,7 +99,7 @@ public class Manager {
         deleteGarbageItems();
     }
 
-    private static boolean hasItem(String name) {
+    public static boolean hasItem(String name) {
         try(Connection connection = dataSource.getConnection()) {
             String SQL = "SELECT name, quantity " +
                     "FROM inventory " +

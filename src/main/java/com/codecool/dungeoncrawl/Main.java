@@ -39,6 +39,8 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
+        ui.add(new Label("Pick up item: F"), 0, 1);
+        ui.add(new Label("Hit enemy: SPACE"), 0, 2);
 
         BorderPane borderPane = new BorderPane();
 

@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
+import com.codecool.dungeoncrawl.database.Manager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.Drawable;
 import com.codecool.dungeoncrawl.logic.items.Door;
@@ -14,7 +15,7 @@ public abstract class Actor implements Drawable {
         this.cell.setActor(this);
     }
 
-    private boolean isValidMove(Cell cell) {
+    protected boolean isValidMove(Cell cell) {
         if (cell.getTileName().equals("floor")) {
             if (cell.getActor() != null) {
                 if (!cell.getActor().getTileName().equals("skeleton")) {

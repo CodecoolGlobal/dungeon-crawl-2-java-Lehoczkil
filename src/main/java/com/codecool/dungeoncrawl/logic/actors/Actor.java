@@ -8,11 +8,25 @@ import com.codecool.dungeoncrawl.logic.items.Door;
 public abstract class Actor implements Drawable {
 
     protected Cell cell;
-    private int health = 10;
+    protected boolean isAlive = true;
+    protected int health = 10;
 
     public Actor(Cell cell) {
         this.cell = cell;
         this.cell.setActor(this);
+    }
+
+    public abstract void attack(Actor enemy);
+
+    public void takeDamage(int damage) {
+        health -= damage;
+        if (health <= 0) {
+            isAlive = false;
+        }
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 
     protected boolean isValidMove(Cell cell) {

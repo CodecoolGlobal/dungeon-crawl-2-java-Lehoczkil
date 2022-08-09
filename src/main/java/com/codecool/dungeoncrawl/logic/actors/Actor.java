@@ -5,7 +5,8 @@ import com.codecool.dungeoncrawl.logic.Drawable;
 import com.codecool.dungeoncrawl.logic.items.Door;
 
 public abstract class Actor implements Drawable {
-    private Cell cell;
+
+    protected Cell cell;
     private int health = 10;
 
     public Actor(Cell cell) {

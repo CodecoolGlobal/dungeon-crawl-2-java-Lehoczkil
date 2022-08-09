@@ -8,7 +8,7 @@ import com.codecool.dungeoncrawl.logic.items.Door;
 public abstract class Actor implements Drawable {
 
     protected Cell cell;
-    private int health = 10;
+    private int health = 50;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -18,14 +18,9 @@ public abstract class Actor implements Drawable {
     protected boolean isValidMove(Cell cell) {
         if (cell.getTileName().equals("floor")) {
             if (cell.getActor() != null) {
-                if (!cell.getActor().getTileName().equals("skeleton")) {
-                    return true;
-                }
+                return !cell.getActor().getTileName().equals("skeleton");
             } else if (cell.getItem() != null) {
-                if (cell.getItem().getTileName().equals("closed door")) {
-                    return false;
-                }
-                return true;
+                return !cell.getItem().getTileName().equals("closed door");
             } else {
                 return true;
             }

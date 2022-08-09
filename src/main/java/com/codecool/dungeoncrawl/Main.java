@@ -28,6 +28,7 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         new Manager().setup();
+        Manager.restoreDB("src/main/java/com/codecool/dungeoncrawl/database/inventory.sql");
         launch(args);
     }
 
@@ -85,9 +86,6 @@ public class Main extends Application {
     }
 
     private void refresh() {
-        if (map.getPlayer().isOnItem()) {
-
-        }
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {

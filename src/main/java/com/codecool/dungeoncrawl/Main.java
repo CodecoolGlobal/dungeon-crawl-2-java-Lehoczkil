@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -81,13 +82,52 @@ public class Main extends Application {
                     player.getCell().setItem(null);
                 }
                 break;
+            case SPACE:
+                if (player.getCell().getNeighbor(0,-1).getActor() != null &&
+                    player.getCell().getNeighbor(0,-1).getActor().getTileName().equals("skeleton")) {
+                    Skeleton enemy = (Skeleton) player.getCell().getNeighbor(0,-1).getActor();
+                    player.attack(enemy);
+                    enemy.attack(player);
+                    if (!enemy.isAlive()) {
+                        player.getCell().getNeighbor(0,-1).setActor(null);
+                    }
+                } else if (player.getCell().getNeighbor(0,1).getActor() != null &&
+                           player.getCell().getNeighbor(0,1).getActor().getTileName().equals("skeleton")) {
+                    Skeleton enemy = (Skeleton) player.getCell().getNeighbor(0,1).getActor();
+                    player.attack(enemy);
+                    enemy.attack(player);
+                    if (!enemy.isAlive()) {
+                        player.getCell().getNeighbor(0,1).setActor(null);
+                    }
+                } else if (player.getCell().getNeighbor(-1,0).getActor() != null &&
+                           player.getCell().getNeighbor(-1,0).getActor().getTileName().equals("skeleton")) {
+                    Skeleton enemy = (Skeleton) player.getCell().getNeighbor(-1,0).getActor();
+                    player.attack(enemy);
+                    enemy.attack(player);
+                    if (!enemy.isAlive()) {
+                        player.getCell().getNeighbor(-1,0).setActor(null);
+                    }
+                } else if (player.getCell().getNeighbor(1,0).getActor() != null &&
+                           player.getCell().getNeighbor(1,0).getActor().getTileName().equals("skeleton")) {
+                    Skeleton enemy = (Skeleton) player.getCell().getNeighbor(1,0).getActor();
+                    player.attack(enemy);
+                    enemy.attack(player);
+                    if (!enemy.isAlive()) {
+                        player.getCell().getNeighbor(1,0).setActor(null);
+                    }
+                }
+                break;
+        }
+    }
+
+    private void moveSkeletons() {
+        for (Skeleton skeleton: map.getSkeletons()) {
+            skeleton.move();
         }
     }
 
     private void refresh() {
-        if (map.getPlayer().isOnItem()) {
-
-        }
+        moveSkeletons();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {

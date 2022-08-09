@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.database.Manager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -15,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -30,7 +32,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
@@ -53,27 +55,37 @@ public class Main extends Application {
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
+        Player player = map.getPlayer();
         switch (keyEvent.getCode()) {
             case UP:
-                map.getPlayer().move(0, -1);
+                player.move(0, -1);
                 refresh();
                 break;
             case DOWN:
-                map.getPlayer().move(0, 1);
+                player.move(0, 1);
                 refresh();
                 break;
             case LEFT:
-                map.getPlayer().move(-1, 0);
+                player.move(-1, 0);
                 refresh();
                 break;
             case RIGHT:
-                map.getPlayer().move(1,0);
+                player.move(1,0);
                 refresh();
+                break;
+            case F:
+                if (player.isOnItem()) {
+                    player.pickUp(player.getCell().getItem());
+                    player.getCell().setItem(null);
+                }
                 break;
         }
     }
 
     private void refresh() {
+        if (map.getPlayer().isOnItem()) {
+
+        }
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {

@@ -106,7 +106,7 @@ public class Manager {
                     "WHERE name = ?";
             PreparedStatement statement = connection.prepareStatement(SQL);
             statement.setString(1, name);
-            ResultSet resultSet = statement.getResultSet();
+            ResultSet resultSet = statement.executeQuery();
             return resultSet.next();
         } catch (SQLException throwables) {
             throw new RuntimeException(throwables);

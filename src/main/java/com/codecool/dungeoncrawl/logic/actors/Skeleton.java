@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,10 +25,11 @@ public class Skeleton extends Actor {
 
     @Override
     protected boolean isValidMove(Cell cell) {
+        if (lookForPlayer()) return false;
         if (cell.getTileName().equals("floor")) {
             if (cell.getActor() != null) {
-                if (!cell.getActor().getTileName().equals("player")) {
-                    return true;
+                if (cell.getActor().getTileName().equals("player") || cell.getActor().getTileName().equals("skeleton")) {
+                    return false;
                 }
             } else if (cell.getItem() != null) {
                 if (cell.getItem().getTileName().equals("closed door")) {
@@ -36,6 +38,19 @@ public class Skeleton extends Actor {
                 return true;
             } else {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean lookForPlayer() {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                Cell nextCell = this.cell.getNeighbor(i, j);
+                if (nextCell.getType().equals(CellType.FLOOR) && nextCell.getActor() != null
+                    && nextCell.getActor().getTileName().equals("player")) {
+                    return true;
+                }
             }
         }
         return false;

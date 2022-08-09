@@ -52,7 +52,7 @@ public class Display {
         return new Scene(borderPane);
     }
 
-    public static void displayGame(Label healthLabel, Canvas canvas, Stage primaryStage, Scene scene) {
+    public static void displayGame(Stage primaryStage, Scene scene) {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();

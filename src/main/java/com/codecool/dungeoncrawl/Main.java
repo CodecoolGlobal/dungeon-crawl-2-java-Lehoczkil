@@ -37,7 +37,7 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
         Scene scene = Display.generateGameWindow(healthLabel, canvas);
         scene.setOnKeyPressed(this::onKeyPressed);
-        Display.displayGame(healthLabel, canvas, primaryStage, scene);
+        Display.displayGame(primaryStage, scene);
         refresh();
 
     }
@@ -90,6 +90,6 @@ public class Main extends Application {
 
         Scene scene = Display.generateGameWindow(healthLabel, canvas);
         scene.setOnKeyPressed(this::onKeyPressed);
-        Display.displayGame(healthLabel, canvas, primaryStage, scene);
+        Display.displayGame(primaryStage, scene);
     }
 }

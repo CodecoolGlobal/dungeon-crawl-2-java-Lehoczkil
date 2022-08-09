@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
+import com.codecool.dungeoncrawl.Tiles;
 import com.codecool.dungeoncrawl.database.Manager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Door;
@@ -20,6 +21,7 @@ public class Player extends Actor {
 
     public void pickUp(Item item) {
         Manager.addItem(item.getTileName());
+        if (item.getTileName().equals("sword")) Tiles.UpdatePlayerImage();
     }
 
     @Override

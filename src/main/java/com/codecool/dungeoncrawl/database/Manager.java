@@ -1,12 +1,15 @@
 package com.codecool.dungeoncrawl.database;
 
 import javax.sql.DataSource;
+import java.beans.Statement;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 
 public class Manager {
 
@@ -110,6 +113,26 @@ public class Manager {
             return resultSet.next();
         } catch (SQLException throwables) {
             throw new RuntimeException(throwables);
+        }
+    }
+
+    public static void restoreDB (String SQLScriptPath) {
+        try (Connection connection = dataSource.getConnection()) {
+            try {
+                BufferedReader in = new BufferedReader(new FileReader(SQLScriptPath));
+                String str;
+                StringBuffer sb = new StringBuffer();
+                while ((str = in.readLine()) != null) {
+                    sb.append(str).append("\n");
+                }
+                in.close();
+                PreparedStatement stmt = connection.prepareStatement(sb.toString());
+                stmt.executeUpdate();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException throwables) {
+            throw new RuntimeException();
         }
     }
 }

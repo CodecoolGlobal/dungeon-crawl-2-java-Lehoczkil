@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
+import com.codecool.dungeoncrawl.Tiles;
 import com.codecool.dungeoncrawl.database.Manager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Door;
@@ -23,6 +24,7 @@ public class Player extends Actor {
 
     public void pickUp(Item item) {
         Manager.addItem(item.getTileName());
+        if (item.getTileName().equals("sword")) Tiles.UpdatePlayerImage();
     }
 
     @Override
@@ -35,7 +37,7 @@ public class Player extends Actor {
     }
 
     @Override
-    public void move(int dx, int dy) {
+    public boolean move(int dx, int dy) {
         Cell nextCell = this.cell.getNeighbor(dx, dy);
         if (isValidMove(nextCell)) {
             cell.setActor(null);
@@ -44,6 +46,8 @@ public class Player extends Actor {
         } else if (nextCell.getItem() != null && nextCell.getItem().getTileName() == "closed door" && Manager.hasItem("key")) {
             ((Door) nextCell.getItem()).setOpen();
             Manager.decrementItem("key");
+            return false;
         }
+        return true;
     }
 }

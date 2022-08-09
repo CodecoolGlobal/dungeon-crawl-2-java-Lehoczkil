@@ -1,20 +1,18 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.database.Manager;
+import com.codecool.dungeoncrawl.display.Display;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -26,54 +24,43 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Stage primaryStage;
 
     public static void main(String[] args) {
         new Manager().setup();
+        Manager.restoreDB("src/main/java/com/codecool/dungeoncrawl/database/inventory.sql");
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        GridPane ui = new GridPane();
-        ui.setPrefWidth(200);
-        ui.setPadding(new Insets(10));
 
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
-        ui.add(new Label("Pick up item: F"), 0, 1);
-        ui.add(new Label("Hit enemy: SPACE"), 0, 2);
-
-        BorderPane borderPane = new BorderPane();
-
-        borderPane.setCenter(canvas);
-        borderPane.setRight(ui);
-
-        Scene scene = new Scene(borderPane);
-        primaryStage.setScene(scene);
-        refresh();
+        this.primaryStage = primaryStage;
+        Scene scene = Display.generateGameWindow(healthLabel, canvas);
         scene.setOnKeyPressed(this::onKeyPressed);
+        Display.displayGame(primaryStage, scene);
+        refresh();
 
-        primaryStage.setTitle("Dungeon Crawl");
-        primaryStage.show();
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
         Player player = map.getPlayer();
+        boolean moved = false;
         switch (keyEvent.getCode()) {
             case UP:
-                player.move(0, -1);
+                moved = player.move(0, -1);
                 refresh();
                 break;
             case DOWN:
-                player.move(0, 1);
+                moved = player.move(0, 1);
                 refresh();
                 break;
             case LEFT:
-                player.move(-1, 0);
+                moved = player.move(-1, 0);
                 refresh();
                 break;
             case RIGHT:
-                player.move(1,0);
+                moved = player.move(1,0);
                 refresh();
                 break;
             case F:
@@ -81,6 +68,10 @@ public class Main extends Application {
                     player.pickUp(player.getCell().getItem());
                     player.getCell().setItem(null);
                 }
+                Scene scene = Display.generateGameWindow(healthLabel, canvas);
+                scene.setOnKeyPressed(this::onKeyPressed);
+                Display.displayGame(primaryStage, scene);
+                refresh();
                 break;
             case SPACE:
                 if (player.getCell().getNeighbor(0,-1).getActor() != null &&
@@ -117,6 +108,12 @@ public class Main extends Application {
                     }
                 }
                 break;
+        }
+        if (!moved) {
+            Scene scene = Display.generateGameWindow(healthLabel, canvas);
+            scene.setOnKeyPressed(this::onKeyPressed);
+            Display.displayGame(primaryStage, scene);
+            refresh();
         }
     }
 

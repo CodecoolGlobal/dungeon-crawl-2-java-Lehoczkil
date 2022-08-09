@@ -1,19 +1,17 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.database.Manager;
+import com.codecool.dungeoncrawl.display.Display;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -25,6 +23,7 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Stage primaryStage;
 
     public static void main(String[] args) {
         new Manager().setup();
@@ -34,27 +33,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        GridPane ui = new GridPane();
-        ui.setPrefWidth(200);
-        ui.setPadding(new Insets(10));
 
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
-        ui.add(new Label("Pick up item: F"), 0, 1);
-        ui.add(new Label("Hit enemy: SPACE"), 0, 2);
-
-        BorderPane borderPane = new BorderPane();
-
-        borderPane.setCenter(canvas);
-        borderPane.setRight(ui);
-
-        Scene scene = new Scene(borderPane);
-        primaryStage.setScene(scene);
-        refresh();
+        this.primaryStage = primaryStage;
+        Scene scene = Display.generateGameWindow(healthLabel, canvas);
         scene.setOnKeyPressed(this::onKeyPressed);
+        Display.displayGame(healthLabel, canvas, primaryStage, scene);
+        refresh();
 
-        primaryStage.setTitle("Dungeon Crawl");
-        primaryStage.show();
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
@@ -81,6 +66,7 @@ public class Main extends Application {
                     player.pickUp(player.getCell().getItem());
                     player.getCell().setItem(null);
                 }
+                refresh();
                 break;
         }
     }

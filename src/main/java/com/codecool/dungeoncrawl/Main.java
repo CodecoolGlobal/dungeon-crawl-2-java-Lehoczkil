@@ -87,5 +87,9 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+
+        Scene scene = Display.generateGameWindow(healthLabel, canvas);
+        scene.setOnKeyPressed(this::onKeyPressed);
+        Display.displayGame(healthLabel, canvas, primaryStage, scene);
     }
 }

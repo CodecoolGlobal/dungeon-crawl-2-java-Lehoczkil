@@ -35,6 +35,8 @@ public class Tiles {
         tileMap.put("closed door", new Tile(0, 9));
         tileMap.put("open door", new Tile(2, 9));
         tileMap.put("armor", new Tile(1, 23));
+        tileMap.put("boss", new Tile(30,6));
+        tileMap.put("ghost", new Tile(27, 6));
     }
 
     public static void updatePlayerImage(int col) {

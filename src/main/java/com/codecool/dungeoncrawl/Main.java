@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.display.Display;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import javafx.application.Application;
@@ -50,6 +51,20 @@ public class Main extends Application {
 
     }
 
+    private void checkForEnemy(int dx, int dy) {
+        if (player.getCell().getNeighbor(dx, dy).getActor() != null &&
+           (player.getCell().getNeighbor(dx, dy).getActor().getTileName().equals("skeleton") ||
+            player.getCell().getNeighbor(dx, dy).getActor().getTileName().equals("ghost") ||
+            player.getCell().getNeighbor(dx, dy).getActor().getTileName().equals("boss"))) {
+                Enemy enemy = (Enemy) player.getCell().getNeighbor(dx, dy).getActor();
+                player.attack(enemy);
+                enemy.attack(player);
+                if (!enemy.isAlive()) {
+                    player.getCell().getNeighbor(dx, dy).setActor(null);
+                }
+        }
+    }
+
     private void onKeyPressed(KeyEvent keyEvent) {
         Player player = map.getPlayer();
         boolean moved = false;
@@ -78,39 +93,10 @@ public class Main extends Application {
                 refresh();
                 break;
             case SPACE:
-                if (player.getCell().getNeighbor(0,-1).getActor() != null &&
-                    player.getCell().getNeighbor(0,-1).getActor().getTileName().equals("skeleton")) {
-                    Skeleton enemy = (Skeleton) player.getCell().getNeighbor(0,-1).getActor();
-                    player.attack(enemy);
-                    enemy.attack(player);
-                    if (!enemy.isAlive()) {
-                        player.getCell().getNeighbor(0,-1).setActor(null);
-                    }
-                } else if (player.getCell().getNeighbor(0,1).getActor() != null &&
-                           player.getCell().getNeighbor(0,1).getActor().getTileName().equals("skeleton")) {
-                    Skeleton enemy = (Skeleton) player.getCell().getNeighbor(0,1).getActor();
-                    player.attack(enemy);
-                    enemy.attack(player);
-                    if (!enemy.isAlive()) {
-                        player.getCell().getNeighbor(0,1).setActor(null);
-                    }
-                } else if (player.getCell().getNeighbor(-1,0).getActor() != null &&
-                           player.getCell().getNeighbor(-1,0).getActor().getTileName().equals("skeleton")) {
-                    Skeleton enemy = (Skeleton) player.getCell().getNeighbor(-1,0).getActor();
-                    player.attack(enemy);
-                    enemy.attack(player);
-                    if (!enemy.isAlive()) {
-                        player.getCell().getNeighbor(-1,0).setActor(null);
-                    }
-                } else if (player.getCell().getNeighbor(1,0).getActor() != null &&
-                           player.getCell().getNeighbor(1,0).getActor().getTileName().equals("skeleton")) {
-                    Skeleton enemy = (Skeleton) player.getCell().getNeighbor(1,0).getActor();
-                    player.attack(enemy);
-                    enemy.attack(player);
-                    if (!enemy.isAlive()) {
-                        player.getCell().getNeighbor(1,0).setActor(null);
-                    }
-                }
+                checkForEnemy(0, -1);
+                checkForEnemy(0,1);
+                checkForEnemy(-1,0);
+                checkForEnemy(1,0);
                 break;
         }
         if (!moved) {
@@ -118,9 +104,9 @@ public class Main extends Application {
         }
     }
 
-    private void moveSkeletons() {
-        for (Skeleton skeleton: map.getSkeletons()) {
-            skeleton.move();
+    private void moveEnemies() {
+        for (Enemy enemy: map.getEnemies()) {
+            enemy.move();
         }
     }
 
@@ -133,7 +119,7 @@ public class Main extends Application {
             refresh();
             currentMap++;
         } else {
-            moveSkeletons();
+            moveEnemies();
             context.setFill(Color.BLACK);
             context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
             for (int x = 0; x < map.getWidth(); x++) {

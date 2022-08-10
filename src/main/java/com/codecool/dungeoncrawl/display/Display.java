@@ -2,12 +2,15 @@ package com.codecool.dungeoncrawl.display;
 
 import com.codecool.dungeoncrawl.Tiles;
 import com.codecool.dungeoncrawl.database.Manager;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.util.HashMap;
@@ -97,5 +100,36 @@ public class Display {
             }
         }
         inventory.setText(sb.toString());
+    }
+
+    public static Scene createMenu (Stage primaryStage, Label healthLabel, Canvas canvas, Label inventory) {
+
+        Button newGame = new Button();
+        newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+        newGame.setText("NEW GAME");
+        newGame.setStyle("-fx-font-size: 80");
+        newGame.setTextFill(Color.CHOCOLATE);
+        newGame.setId("gameBtn");
+
+        Button exitGame = new Button();
+        exitGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+        exitGame.setText("EXIT GAME");
+        exitGame.setStyle("-fx-font-size: 80");
+        exitGame.setTextFill(Color.CHOCOLATE);
+        exitGame.setId("exitBtn");
+
+        Label logo = new Label("Rolling Winter Wombats Ltd");
+        logo.setTextFill(Color.CORNSILK);
+        logo.setStyle("-fx-font-size: 60");
+        logo.setPadding(new Insets(50, 0, 0, 0));
+
+        VBox menuPane = new VBox(30, newGame, exitGame, logo);
+        menuPane.setPrefWidth(primaryStage.getWidth());
+        menuPane.setPrefHeight(primaryStage.getHeight());
+        menuPane.setStyle("-fx-background-color: #999999");
+
+        menuPane.setAlignment(Pos.CENTER);
+
+        return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
     }
 }

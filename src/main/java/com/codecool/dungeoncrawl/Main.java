@@ -7,11 +7,11 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -42,12 +42,22 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         player = map.getPlayer();
         this.primaryStage = primaryStage;
-        Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);
-        scene.setOnKeyPressed(this::onKeyPressed);
-        Display.displayGame(this.primaryStage, scene);
-        canvas.setHeight(map.getHeight() * Tiles.TILE_WIDTH);
-        canvas.setWidth(map.getWidth() * Tiles.TILE_WIDTH);
-        refresh();
+        primaryStage.setFullScreen(true);
+
+        Scene menu = Display.createMenu(primaryStage, healthLabel, canvas, inventory);
+        Button newGame = (Button) menu.lookup("#gameBtn");
+        newGame.setOnAction(ActionEvent -> {
+            Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);
+            scene.setOnKeyPressed(this::onKeyPressed);
+            Display.displayGame(primaryStage, scene);
+            canvas.setHeight(map.getHeight() * Tiles.TILE_WIDTH);
+            canvas.setWidth(map.getWidth() * Tiles.TILE_WIDTH);
+            refresh();
+        });
+        Button exit = (Button) menu.lookup("#exitBtn");
+        exit.setOnAction(ActionEvent -> primaryStage.close());
+
+        Display.displayGame(primaryStage, menu);
 
     }
 
@@ -98,8 +108,11 @@ public class Main extends Application {
                 checkForEnemy(-1,0);
                 checkForEnemy(1,0);
                 break;
+            case ESCAPE:
+                primaryStage.close();
         }
         if (!moved) {
+            Display.updateInventory(inventory);
             refresh();
         }
     }
@@ -136,6 +149,5 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
-        Display.updateInventory(inventory);
     }
 }

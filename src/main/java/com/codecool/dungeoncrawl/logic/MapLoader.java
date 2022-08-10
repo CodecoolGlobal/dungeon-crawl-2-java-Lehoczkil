@@ -68,4 +68,10 @@ public class MapLoader {
         return map;
     }
 
+    public static GameMap loadNextLevel(int currentMap) {
+        currentMap += 1;
+        String nextLevel = "/map" + currentMap + ".txt";
+        return loadMap(nextLevel);
+    }
+
 }

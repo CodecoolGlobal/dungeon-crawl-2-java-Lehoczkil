@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
+
+    int currentMap = 1;
     GameMap map = MapLoader.loadMap("/map.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
@@ -122,6 +124,9 @@ public class Main extends Application {
         if (!map.getPlayer().isAlive()) {
             Scene endGame = Display.createEndGameScene();
             Display.displayGame(primaryStage, endGame);
+        } else if (map.isLevelOver() && currentMap < 3) {
+            map = MapLoader.loadNextLevel(currentMap);
+            currentMap++;
         } else {
             moveSkeletons();
             context.setFill(Color.BLACK);

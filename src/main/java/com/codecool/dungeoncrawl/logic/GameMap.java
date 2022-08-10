@@ -54,4 +54,17 @@ public class GameMap {
         }
         return result;
     }
+
+    public boolean isLevelOver() {
+        for (Cell[] row: cells) {
+            for (Cell cell: row) {
+                if (cell.getActor() != null && cell.getItem() != null &&
+                    cell.getItem().getTileName().equals("open door") &&
+                    cell.getActor().getTileName().equals("player")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

@@ -1,7 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
+import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 
 import java.util.ArrayList;
 
@@ -43,15 +43,30 @@ public class GameMap {
         return height;
     }
 
-    public ArrayList<Skeleton> getSkeletons() {
-        ArrayList<Skeleton> result = new ArrayList<>();
+    public ArrayList<Enemy> getEnemies() {
+        ArrayList<Enemy> result = new ArrayList<>();
         for (Cell[] row: cells) {
             for (Cell cell: row) {
-                if (cell.getActor() != null && cell.getActor().getTileName().equals("skeleton")) {
-                    result.add((Skeleton) cell.getActor());
+                if (cell.getActor() != null && (cell.getActor().getTileName().equals("skeleton") ||
+                        cell.getActor().getTileName().equals("ghost") ||
+                        cell.getActor().getTileName().equals("boss"))) {
+                    result.add((Enemy) cell.getActor());
                 }
             }
         }
         return result;
+    }
+
+    public boolean isLevelOver() {
+        for (Cell[] row: cells) {
+            for (Cell cell: row) {
+                if (cell.getActor() != null && cell.getItem() != null &&
+                    cell.getItem().getTileName().equals("open door") &&
+                    cell.getActor().getTileName().equals("player")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

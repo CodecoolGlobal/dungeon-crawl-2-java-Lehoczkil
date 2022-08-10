@@ -10,6 +10,7 @@ public class Player extends Actor {
 
     private boolean hasSword = false;
     private boolean hasArmor = false;
+    private PlayerState playerState = PlayerState.NAKED;
 
     public Player(Cell cell) {
         super(cell);
@@ -24,19 +25,23 @@ public class Player extends Actor {
     }
 
     public void pickUp(Item item) {
+        if (item.getTileName().equals("heal")){
+            health += 3;
+        }
         Manager.addItem(item.getTileName());
         if (item.getTileName().equals("sword")) {
             hasSword = true;
-            Tiles.updatePlayerImage(27);
+            playerState = PlayerState.ARMED;
         } else if (item.getTileName().equals("armor")) {
             hasArmor = true;
             if (!hasSword) {
-                Tiles.updatePlayerImage(30);
+                playerState = PlayerState.ARMORED;
             }
         }
         if (hasSword && hasArmor) {
-            Tiles.updatePlayerImage(28);
+            playerState = PlayerState.FULL;
         }
+        Tiles.updatePlayerImage(playerState.getTileNumber());
     }
 
     @Override
@@ -70,5 +75,9 @@ public class Player extends Actor {
         if (health <= 0) {
             isAlive = false;
         }
+    }
+
+    public void setCell(Cell cell) {
+        this.cell = cell;
     }
 }

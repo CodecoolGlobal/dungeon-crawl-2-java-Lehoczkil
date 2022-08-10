@@ -28,7 +28,9 @@ public class Player extends Actor {
         if (item.getTileName().equals("heal")){
             health += 3;
         }
-        Manager.addItem(item.getTileName());
+        else {
+            Manager.addItem(item.getTileName());
+        }
         if (item.getTileName().equals("sword")) {
             hasSword = true;
             playerState = PlayerState.ARMED;

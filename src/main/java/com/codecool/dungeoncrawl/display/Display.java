@@ -30,7 +30,7 @@ public class Display {
         healthLabel.setStyle("-fx-font-size: " + fontSize);
 
         ui.add(health, 0, 0);
-        ui.add(healthLabel, 1, 0);
+        ui.add(healthLabel, 0, 1);
 
         Label inventory = new Label("\nInventory:\n");
         inventory.setTextFill(Color.WHITE);
@@ -38,9 +38,9 @@ public class Display {
         playerInventory.setTextFill(Color.WHITE);
         playerInventory.setStyle("-fx-font-size: " + fontSize);
 
-        ui.add(inventory, 0, 1);
-        ui.add(playerInventory, 0, 2);
-        ui.add(new Label("\n"), 0, 3);
+        ui.add(inventory, 0, 2);
+        ui.add(playerInventory, 0, 3);
+        ui.add(new Label("\n"), 0, 4);
 
         Label pickUp = new Label("Pick up item: F");
         pickUp.setTextFill(Color.WHITE);
@@ -49,8 +49,8 @@ public class Display {
         attack.setTextFill(Color.WHITE);
         attack.setStyle("-fx-font-size: " + fontSize);
 
-        ui.add(pickUp, 0, 4);
-        ui.add(attack, 0, 5);
+        ui.add(pickUp, 0, 5);
+        ui.add(attack, 0, 6);
         return ui;
     }
 

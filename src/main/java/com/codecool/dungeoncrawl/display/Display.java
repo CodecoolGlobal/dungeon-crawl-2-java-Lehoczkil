@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.display;
 
 import com.codecool.dungeoncrawl.Tiles;
 import com.codecool.dungeoncrawl.database.Manager;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -102,10 +103,6 @@ public class Display {
     }
 
     public static Scene createMenu (Stage primaryStage, Label healthLabel, Canvas canvas, Label inventory) {
-        VBox menuPane = new VBox();
-        menuPane.setPrefWidth(primaryStage.getWidth());
-        menuPane.setPrefHeight(primaryStage.getHeight());
-        menuPane.setStyle("-fx-background-color: #999999");
 
         Button newGame = new Button();
         newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
@@ -124,10 +121,14 @@ public class Display {
         Label logo = new Label("Rolling Winter Wombats Ltd");
         logo.setTextFill(Color.CORNSILK);
         logo.setStyle("-fx-font-size: 60");
+        logo.setPadding(new Insets(50, 0, 0, 0));
 
-        menuPane.getChildren().add(newGame);
-        menuPane.getChildren().add(exitGame);
-        menuPane.getChildren().add(logo);
+        VBox menuPane = new VBox(30, newGame, exitGame, logo);
+        menuPane.setPrefWidth(primaryStage.getWidth());
+        menuPane.setPrefHeight(primaryStage.getHeight());
+        menuPane.setStyle("-fx-background-color: #999999");
+
+        menuPane.setAlignment(Pos.CENTER);
 
         return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
     }

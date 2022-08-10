@@ -7,7 +7,6 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -17,8 +16,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-import java.awt.event.ActionEvent;
 
 
 public class Main extends Application {
@@ -55,15 +52,12 @@ public class Main extends Application {
             Display.displayGame(primaryStage, scene);
             canvas.setHeight(map.getHeight() * Tiles.TILE_WIDTH);
             canvas.setWidth(map.getWidth() * Tiles.TILE_WIDTH);
+            refresh();
         });
         Button exit = (Button) menu.lookup("#exitBtn");
-        exit.setOnAction(ActionEvent -> {
-            primaryStage.close();
-        });
+        exit.setOnAction(ActionEvent -> primaryStage.close());
 
         Display.displayGame(primaryStage, menu);
-
-        refresh();
 
     }
 
@@ -114,6 +108,8 @@ public class Main extends Application {
                 checkForEnemy(-1,0);
                 checkForEnemy(1,0);
                 break;
+            case ESCAPE:
+                primaryStage.close();
         }
         if (!moved) {
             refresh();

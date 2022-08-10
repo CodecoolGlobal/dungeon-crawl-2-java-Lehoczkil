@@ -32,6 +32,7 @@ public class Tiles {
         tileMap.put("key", new Tile(17, 23));
         tileMap.put("closed door", new Tile(0, 9));
         tileMap.put("open door", new Tile(2, 9));
+        tileMap.put("armor", new Tile(1, 23));
     }
 
     public static void updatePlayerImage(int col) {

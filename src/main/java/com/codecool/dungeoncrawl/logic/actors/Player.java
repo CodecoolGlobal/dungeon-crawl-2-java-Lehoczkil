@@ -9,6 +9,7 @@ import com.codecool.dungeoncrawl.logic.items.Item;
 public class Player extends Actor {
 
     private boolean hasSword = false;
+    private boolean hasArmor = false;
 
     public Player(Cell cell) {
         super(cell);
@@ -27,6 +28,14 @@ public class Player extends Actor {
         if (item.getTileName().equals("sword")) {
             hasSword = true;
             Tiles.updatePlayerImage(27);
+        } else if (item.getTileName().equals("armor")) {
+            hasArmor = true;
+            if (!hasSword) {
+                Tiles.updatePlayerImage(30);
+            }
+        }
+        if (hasSword && hasArmor) {
+            Tiles.updatePlayerImage(28);
         }
     }
 
@@ -52,5 +61,14 @@ public class Player extends Actor {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void takeDamage(int damage) {
+        if (hasArmor) damage /= 2;
+        health -= damage;
+        if (health <= 0) {
+            isAlive = false;
+        }
     }
 }

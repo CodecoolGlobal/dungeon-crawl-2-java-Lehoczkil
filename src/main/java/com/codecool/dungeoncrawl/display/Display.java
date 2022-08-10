@@ -7,6 +7,7 @@ import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.util.HashMap;
 
@@ -37,6 +38,20 @@ public class Display {
         borderPane.setRight(ui);
 
         return new Scene(borderPane);
+    }
+
+    public static Scene createEndGameScene() {
+        BorderPane gameOver = new BorderPane();
+        gameOver.setPrefWidth(1000);
+        gameOver.setPrefHeight(640);
+        gameOver.setStyle("-fx-background-color: #000000");
+
+        Label gameOverText = new Label("GAME OVER");
+        gameOverText.setTextFill(Color.RED);
+        gameOverText.setStyle("-fx-font-size: 80");
+        gameOver.setCenter(gameOverText);
+
+        return new Scene(gameOver);
     }
 
     public static void displayGame(Stage primaryStage, Scene scene) {

@@ -24,6 +24,7 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Label inventory = new Label();
     Stage primaryStage;
 
     public static void main(String[] args) {
@@ -36,7 +37,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
 
         this.primaryStage = primaryStage;
-        Scene scene = Display.generateGameWindow(healthLabel, canvas);
+        Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);
         scene.setOnKeyPressed(this::onKeyPressed);
         Display.displayGame(primaryStage, scene);
         refresh();
@@ -68,9 +69,6 @@ public class Main extends Application {
                     player.pickUp(player.getCell().getItem());
                     player.getCell().setItem(null);
                 }
-                Scene scene = Display.generateGameWindow(healthLabel, canvas);
-                scene.setOnKeyPressed(this::onKeyPressed);
-                Display.displayGame(primaryStage, scene);
                 refresh();
                 break;
             case SPACE:
@@ -110,9 +108,6 @@ public class Main extends Application {
                 break;
         }
         if (!moved) {
-            Scene scene = Display.generateGameWindow(healthLabel, canvas);
-            scene.setOnKeyPressed(this::onKeyPressed);
-            Display.displayGame(primaryStage, scene);
             refresh();
         }
     }
@@ -140,5 +135,6 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+        Display.updateInventory(inventory);
     }
 }

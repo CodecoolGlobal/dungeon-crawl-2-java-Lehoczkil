@@ -24,7 +24,10 @@ public class Player extends Actor {
 
     public void pickUp(Item item) {
         Manager.addItem(item.getTileName());
-        if (item.getTileName().equals("sword")) Tiles.UpdatePlayerImage();
+        if (item.getTileName().equals("sword")) {
+            hasSword = true;
+            Tiles.updatePlayerImage();
+        }
     }
 
     @Override

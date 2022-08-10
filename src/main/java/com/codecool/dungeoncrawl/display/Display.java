@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class Display {
 
-    private static GridPane generateUI(Label healthLabel) {
+    private static GridPane generateUI(Label healthLabel, Label playerInventory) {
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
@@ -21,29 +21,16 @@ public class Display {
         ui.add(healthLabel, 1, 0);
 
         ui.add(new Label("\nInventory:\n"), 0, 1);
-        HashMap<String, Integer> inventory = Manager.getItems();
-        if (inventory.size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            for (String item: inventory.keySet()) {
-                sb.append(item);
-                if (inventory.get(item) > 1) {
-                    sb.append(" ").append(inventory.get(item));
-                }
-                sb.append("\n");
-            }
-            ui.add(new Label(sb.toString()), 0, 2);
+            ui.add(playerInventory, 0, 2);
             ui.add(new Label("\n"), 0, 3);
-        } else {
-            ui.add(new Label("\n"),0 ,2);
-        }
 
         ui.add(new Label("Pick up item: F"), 0, 4);
         ui.add(new Label("Hit enemy: SPACE"), 0, 5);
         return ui;
     }
 
-    public static Scene generateGameWindow(Label healthLabel, Canvas canvas) {
-        GridPane ui = generateUI(healthLabel);
+    public static Scene generateGameWindow(Label healthLabel, Canvas canvas, Label inventory) {
+        GridPane ui = generateUI(healthLabel, inventory);
         BorderPane borderPane = new BorderPane();
 
         borderPane.setCenter(canvas);
@@ -56,5 +43,20 @@ public class Display {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
+    }
+
+    public static void updateInventory (Label inventory) {
+        HashMap<String, Integer> items = Manager.getItems();
+        StringBuilder sb = new StringBuilder();
+        if (items.size() > 0) {
+            for (String item: items.keySet()) {
+                sb.append(item);
+                if (items.get(item) > 1) {
+                    sb.append(" ").append(items.get(item));
+                }
+                sb.append("\n");
+            }
+        }
+        inventory.setText(sb.toString());
     }
 }

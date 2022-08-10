@@ -112,6 +112,7 @@ public class Main extends Application {
                 primaryStage.close();
         }
         if (!moved) {
+            Display.updateInventory(inventory);
             refresh();
         }
     }
@@ -148,6 +149,5 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
-        Display.updateInventory(inventory);
     }
 }

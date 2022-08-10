@@ -1,17 +1,16 @@
 package com.codecool.dungeoncrawl.logic;
 
+import com.codecool.dungeoncrawl.logic.actors.Boss;
+import com.codecool.dungeoncrawl.logic.actors.Ghost;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Skeleton;
-import com.codecool.dungeoncrawl.logic.items.Armor;
-import com.codecool.dungeoncrawl.logic.items.Door;
-import com.codecool.dungeoncrawl.logic.items.Key;
-import com.codecool.dungeoncrawl.logic.items.Sword;
+import com.codecool.dungeoncrawl.logic.items.*;
 
 import java.io.InputStream;
 import java.util.Scanner;
 
 public class MapLoader {
-    public static GameMap loadMap(String fileName) {
+    public static GameMap loadMap(String fileName, Player player) {
         InputStream is = MapLoader.class.getResourceAsStream(fileName);
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
@@ -39,9 +38,23 @@ public class MapLoader {
                             cell.setType(CellType.FLOOR);
                             new Skeleton(cell);
                             break;
+                        case 'g':
+                            cell.setType(CellType.FLOOR);
+                            new Ghost(cell);
+                            break;
+                        case 'b':
+                            cell.setType(CellType.FLOOR);
+                            new Boss(cell);
+                            break;
                         case '@':
                             cell.setType(CellType.FLOOR);
-                            map.setPlayer(new Player(cell));
+                            if (player != null) {
+                                player.setCell(cell);
+                                cell.setActor(player);
+                                map.setPlayer(player);
+                            } else {
+                                map.setPlayer(new Player(cell));
+                            }
                             break;
                         case '|':
                             cell.setType(CellType.FLOOR);
@@ -59,6 +72,10 @@ public class MapLoader {
                             cell.setType(CellType.FLOOR);
                             new Armor(cell);
                             break;
+                        case 'h':
+                            cell.setType(CellType.FLOOR);
+                            new HealPotion(cell);
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }
@@ -66,6 +83,12 @@ public class MapLoader {
             }
         }
         return map;
+    }
+
+    public static GameMap loadNextLevel(int currentMap, Player player) {
+        currentMap += 1;
+        String nextLevel = "/map" + currentMap + ".txt";
+        return loadMap(nextLevel, player);
     }
 
 }

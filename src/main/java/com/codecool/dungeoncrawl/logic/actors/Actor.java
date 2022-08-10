@@ -30,8 +30,10 @@ public abstract class Actor implements Drawable {
     protected boolean isValidMove(Cell cell) {
         if (cell.getTileName().equals("floor")) {
             if (cell.getActor() != null) {
-                if (!cell.getActor().getTileName().equals("skeleton")) {
-                    return true;
+                if (!cell.getActor().getTileName().equals("skeleton") &&
+                    !cell.getActor().getTileName().equals("ghost") &&
+                    !cell.getActor().getTileName().equals("boss")) {
+                        return true;
                 }
             } else if (cell.getItem() != null) {
                 if (cell.getItem().getTileName().equals("closed door")) {

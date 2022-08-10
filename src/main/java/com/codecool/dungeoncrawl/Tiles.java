@@ -8,17 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Tiles {
-    public static int TILE_WIDTH = 32;
+    public static double TILE_WIDTH = 48;
+    public static int TXT_TILE_WIDTH = 32;
+    public static int MARGIN = 2;
 
-    private static Image tileset = new Image("/tiles.png", 543 * 2, 543 * 2, true, false);
+    private static final Image tileset = new Image("/tiles.png", 543 * 2, 543 * 2, true, false);
     private static Map<String, Tile> tileMap = new HashMap<>();
     public static class Tile {
         public final int x, y, w, h;
         Tile(int i, int j) {
-            x = i * (TILE_WIDTH + 2);
-            y = j * (TILE_WIDTH + 2);
-            w = TILE_WIDTH;
-            h = TILE_WIDTH;
+            x = i * (TXT_TILE_WIDTH + MARGIN);
+            y = j * (TXT_TILE_WIDTH + MARGIN);
+            w = TXT_TILE_WIDTH;
+            h = TXT_TILE_WIDTH;
         }
     }
 
@@ -33,6 +35,9 @@ public class Tiles {
         tileMap.put("closed door", new Tile(0, 9));
         tileMap.put("open door", new Tile(2, 9));
         tileMap.put("armor", new Tile(1, 23));
+        tileMap.put("boss", new Tile(30,6));
+        tileMap.put("ghost", new Tile(27, 6));
+        tileMap.put("heal", new Tile(23,22));
     }
 
     public static void updatePlayerImage(int col) {
@@ -43,5 +48,9 @@ public class Tiles {
         Tile tile = tileMap.get(d.getTileName());
         context.drawImage(tileset, tile.x, tile.y, tile.w, tile.h,
                 x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
+    }
+
+    public static void setTileWidth(double tileWidth) {
+        TILE_WIDTH = tileWidth;
     }
 }

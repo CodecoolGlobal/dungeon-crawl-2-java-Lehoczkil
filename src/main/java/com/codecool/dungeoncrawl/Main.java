@@ -13,6 +13,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -119,6 +120,7 @@ public class Main extends Application {
 
     private void moveEnemies() {
         for (Enemy enemy: map.getEnemies()) {
+            enemy.attackPlayer(player);
             enemy.move();
         }
     }
@@ -126,6 +128,11 @@ public class Main extends Application {
     private void refresh() {
         if (!map.getPlayer().isAlive()) {
             Scene endGame = Display.createEndGameScene(primaryStage);
+            endGame.setOnKeyPressed(KeyEvent -> {
+                if (KeyEvent.getCode() == KeyCode.ESCAPE) {
+                    primaryStage.close();
+                }
+            });
             Display.displayGame(primaryStage, endGame);
         } else if (map.isLevelOver() && currentMap < 3) {
             map = MapLoader.loadNextLevel(currentMap, player);

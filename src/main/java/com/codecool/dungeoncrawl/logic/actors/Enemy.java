@@ -66,4 +66,18 @@ public class Enemy extends Actor{
             cell = nextCell;
         }
     }
+
+    public void attackPlayer(Player player) {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if (Math.abs(i) - Math.abs(j) != 0) {
+                    Cell nextCell = this.cell.getNeighbor(i, j);
+                    if (nextCell.getType().equals(CellType.FLOOR) && nextCell.getActor() != null
+                            && nextCell.getActor().getTileName().equals("player")) {
+                        attack(player);
+                    }
+                }
+            }
+        }
+    }
 }

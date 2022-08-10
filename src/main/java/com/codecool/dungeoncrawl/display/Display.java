@@ -1,15 +1,20 @@
 package com.codecool.dungeoncrawl.display;
 
+import com.codecool.dungeoncrawl.Main;
 import com.codecool.dungeoncrawl.database.Manager;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Display {
 
@@ -73,5 +78,46 @@ public class Display {
             }
         }
         inventory.setText(sb.toString());
+    }
+
+    public static Scene createMenu (Stage primaryStage, Label healthLabel, Canvas canvas, Label inventory) {
+        VBox menuPane = new VBox();
+        menuPane.setPrefWidth(primaryStage.getWidth());
+        menuPane.setPrefHeight(primaryStage.getHeight());
+        menuPane.setStyle("-fx-background-color: #999999");
+
+        Button newGame = new Button();
+        newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+        newGame.setText("NEW GAME");
+        newGame.setStyle("-fx-font-size: 80");
+        newGame.setTextFill(Color.CHOCOLATE);
+        newGame.setId("gameBtn");
+
+        Button exitGame = new Button();
+        exitGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+        exitGame.setText("EXIT GAME");
+        exitGame.setStyle("-fx-font-size: 80");
+        exitGame.setTextFill(Color.CHOCOLATE);
+        exitGame.setId("exitBtn");
+
+        Label logo = new Label("Rolling Winter Wombats Ltd");
+        logo.setTextFill(Color.CORNSILK);
+        logo.setStyle("-fx-font-size: 60");
+
+        menuPane.getChildren().add(newGame);
+        menuPane.getChildren().add(exitGame);
+        menuPane.getChildren().add(logo);
+
+        return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
+
+//        newGame.setOnAction(ActionEvent -> {
+//            Scene scene = generateGameWindow(healthLabel, canvas, inventory);
+//            gameScene[0] = scene;
+//        });
+//
+//        exitGame.setOnAction(ActionEvent -> {
+//            primaryStage.close();
+//        });
+
     }
 }

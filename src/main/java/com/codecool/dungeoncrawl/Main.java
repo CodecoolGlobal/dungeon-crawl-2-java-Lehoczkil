@@ -11,10 +11,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.awt.event.ActionEvent;
 
 
 public class Main extends Application {
@@ -37,14 +40,26 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
 
         this.primaryStage = primaryStage;
-        Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);
-        scene.setOnKeyPressed(this::onKeyPressed);
-        Display.displayGame(primaryStage, scene);
+        primaryStage.setFullScreen(true);
+
+        Scene menu = Display.createMenu(primaryStage, healthLabel, canvas, inventory);
+        Button newGame = (Button) menu.lookup("#gameBtn");
+        newGame.setOnAction(ActionEvent -> {
+            Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);
+            scene.setOnKeyPressed(this::onKeyPressed);
+            Display.displayGame(primaryStage, scene);
+        });
+        Button exit = (Button) menu.lookup("#exitBtn");
+        exit.setOnAction(ActionEvent -> {
+            primaryStage.close();
+        });
+
+        Display.displayGame(primaryStage, menu);
         refresh();
 
     }
 
-    private void onKeyPressed(KeyEvent keyEvent) {
+    public void onKeyPressed(KeyEvent keyEvent) {
         Player player = map.getPlayer();
         boolean moved = false;
         switch (keyEvent.getCode()) {

@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 public class MapLoader {
-    public static GameMap loadMap(String fileName) {
+    public static GameMap loadMap(String fileName, Player player) {
         InputStream is = MapLoader.class.getResourceAsStream(fileName);
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
@@ -41,7 +41,13 @@ public class MapLoader {
                             break;
                         case '@':
                             cell.setType(CellType.FLOOR);
-                            map.setPlayer(new Player(cell));
+                            if (player != null) {
+                                player.setCell(cell);
+                                cell.setActor(player);
+                                map.setPlayer(player);
+                            } else {
+                                map.setPlayer(new Player(cell));
+                            }
                             break;
                         case '|':
                             cell.setType(CellType.FLOOR);
@@ -68,10 +74,10 @@ public class MapLoader {
         return map;
     }
 
-    public static GameMap loadNextLevel(int currentMap) {
+    public static GameMap loadNextLevel(int currentMap, Player player) {
         currentMap += 1;
         String nextLevel = "/map" + currentMap + ".txt";
-        return loadMap(nextLevel);
+        return loadMap(nextLevel, player);
     }
 
 }

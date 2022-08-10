@@ -73,4 +73,8 @@ public class Player extends Actor {
             isAlive = false;
         }
     }
+
+    public void setCell(Cell cell) {
+        this.cell = cell;
+    }
 }

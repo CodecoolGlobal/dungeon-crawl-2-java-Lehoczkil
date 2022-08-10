@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     int currentMap = 1;
-    GameMap map = MapLoader.loadMap("/map.txt");
+    GameMap map = MapLoader.loadMap("/map.txt", null);
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -28,6 +28,8 @@ public class Main extends Application {
     Label healthLabel = new Label();
     Label inventory = new Label();
     Stage primaryStage;
+
+    Player player;
 
     public static void main(String[] args) {
         new Manager().setup();
@@ -37,11 +39,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
+        player = map.getPlayer();
         this.primaryStage = primaryStage;
         Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);
         scene.setOnKeyPressed(this::onKeyPressed);
-        Display.displayGame(primaryStage, scene);
+        Display.displayGame(this.primaryStage, scene);
+        canvas.setHeight(map.getHeight() * Tiles.TILE_WIDTH);
+        canvas.setWidth(map.getWidth() * Tiles.TILE_WIDTH);
         refresh();
 
     }
@@ -122,10 +126,11 @@ public class Main extends Application {
 
     private void refresh() {
         if (!map.getPlayer().isAlive()) {
-            Scene endGame = Display.createEndGameScene();
+            Scene endGame = Display.createEndGameScene(primaryStage);
             Display.displayGame(primaryStage, endGame);
         } else if (map.isLevelOver() && currentMap < 3) {
-            map = MapLoader.loadNextLevel(currentMap);
+            map = MapLoader.loadNextLevel(currentMap, player);
+            refresh();
             currentMap++;
         } else {
             moveSkeletons();

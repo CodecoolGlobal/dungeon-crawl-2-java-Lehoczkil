@@ -26,7 +26,7 @@ public class Player extends Actor {
         Manager.addItem(item.getTileName());
         if (item.getTileName().equals("sword")) {
             hasSword = true;
-            Tiles.updatePlayerImage();
+            Tiles.updatePlayerImage(27);
         }
     }
 

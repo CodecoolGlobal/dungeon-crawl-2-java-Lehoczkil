@@ -34,8 +34,8 @@ public class Tiles {
         tileMap.put("open door", new Tile(2, 9));
     }
 
-    public static void updatePlayerImage() {
-        tileMap.replace("player", new Tile(27, 0));
+    public static void updatePlayerImage(int col) {
+        tileMap.replace("player", new Tile(col, 0));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {

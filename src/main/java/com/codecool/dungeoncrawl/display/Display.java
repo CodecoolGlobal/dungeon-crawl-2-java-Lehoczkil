@@ -59,7 +59,7 @@ public class Display {
         BorderPane borderPane = new BorderPane();
         borderPane.setStyle("-fx-background-color: #472d3c");
 
-        borderPane.setLeft(canvas);
+        borderPane.setCenter(canvas);
         borderPane.setRight(ui);
 
         return new Scene(borderPane);
@@ -84,7 +84,7 @@ public class Display {
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.setFullScreen(true);
         primaryStage.show();
-        Tiles.setTileWidth(primaryStage.getHeight()/20);
+        Tiles.setTileWidth(primaryStage.getHeight()/10);
     }
 
     public static void updateInventory (Label inventory) {

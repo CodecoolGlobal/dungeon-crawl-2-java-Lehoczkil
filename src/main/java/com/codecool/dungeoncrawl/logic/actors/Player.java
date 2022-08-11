@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
 public class Player extends Actor {
+    private final int MAX_HEALTH;
 
     private boolean hasSword = false;
     private boolean hasArmor = false;
@@ -14,6 +15,7 @@ public class Player extends Actor {
 
     public Player(Cell cell) {
         super(cell);
+        MAX_HEALTH = 12;
     }
 
     public String getTileName() {
@@ -25,10 +27,10 @@ public class Player extends Actor {
     }
 
     public void pickUp(Item item) {
-        if (item.getTileName().equals("heal") && health <=13){
+        if (item.getTileName().equals("heal") && health <= MAX_HEALTH){
             health += 3;
-        }
-        else {
+            health = Math.min(health, MAX_HEALTH);
+        } else if (!item.getTileName().equals("heal")){
             Manager.addItem(item.getTileName());
         }
         if (item.getTileName().equals("sword")) {

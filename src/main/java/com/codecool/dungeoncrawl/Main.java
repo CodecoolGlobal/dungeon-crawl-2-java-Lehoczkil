@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.display.Display;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Boss;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.vdurmont.emoji.EmojiParser;
@@ -127,6 +128,23 @@ public class Main extends Application {
     }
 
     private void refresh() {
+        if (currentMap == 3) {
+            boolean isBossAlive = false;
+            for (Enemy enemy: map.getEnemies()) {
+                if (enemy.getTileName() == "boss") {
+                    isBossAlive = true;
+                }
+            }
+            if (!isBossAlive) {
+                Scene winningScene = Display.createWinScene(primaryStage);
+                winningScene.setOnKeyPressed(KeyEvent -> {
+                    if (KeyEvent.getCode() == KeyCode.ESCAPE) {
+                        primaryStage.close();
+                    }
+                });
+                Display.displayGame(primaryStage, winningScene);
+            }
+        }
         if (!map.getPlayer().isAlive()) {
             Scene endGame = Display.createEndGameScene(primaryStage);
             endGame.setOnKeyPressed(KeyEvent -> {

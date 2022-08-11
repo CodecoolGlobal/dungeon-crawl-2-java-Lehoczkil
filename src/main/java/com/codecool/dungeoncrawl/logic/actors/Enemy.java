@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Enemy extends Actor{
 
-    private final int[][] possibleMoves = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
+    protected final int[][] possibleMoves = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
 
     public Enemy(Cell cell) {
         super(cell);
@@ -29,9 +29,7 @@ public class Enemy extends Actor{
         if (lookForPlayer()) return false;
         if (cell.getTileName().equals("floor")) {
             if (cell.getActor() != null) {
-                if (cell.getActor().getTileName().equals("player") || cell.getActor().getTileName().equals("skeleton")) {
-                    return false;
-                }
+                return false;
             } else if (cell.getItem() != null) {
                 if (cell.getItem().getTileName().equals("closed door")) {
                     return false;
@@ -44,7 +42,7 @@ public class Enemy extends Actor{
         return false;
     }
 
-    private boolean lookForPlayer() {
+    boolean lookForPlayer() {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 Cell nextCell = this.cell.getNeighbor(i, j);

@@ -7,6 +7,11 @@ public class Cell implements Drawable {
     private CellType type;
     private Actor actor;
     private Item item;
+
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
     private GameMap gameMap;
     private int x, y;
 

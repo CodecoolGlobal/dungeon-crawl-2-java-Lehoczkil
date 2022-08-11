@@ -33,6 +33,7 @@ public class Main extends Application {
     Stage primaryStage;
 
     Player player;
+    private final int displayRange = 5;
 
     public static void main(String[] args) {
         new Manager().setup();
@@ -52,8 +53,8 @@ public class Main extends Application {
             Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);
             scene.setOnKeyPressed(this::onKeyPressed);
             Display.displayGame(primaryStage, scene);
-            canvas.setHeight(9 * Tiles.TILE_WIDTH);
-            canvas.setWidth(9 * Tiles.TILE_WIDTH);
+            canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
+            canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
             refresh();
         });
         Button exit = (Button) menu.lookup("#exitBtn");
@@ -146,8 +147,8 @@ public class Main extends Application {
             int playerY = player.getCell().getY();
             double canvasX = canvas.getWidth() / 2 - Tiles.TILE_WIDTH / 2;
             double canvasY = canvas.getHeight() / 2 - Tiles.TILE_WIDTH / 2;
-            for (int x = -4; x < 5; x++) {
-                for (int y = -4; y < 5; y++) {
+            for (int x = -displayRange; x <= displayRange; x++) {
+                for (int y = -displayRange; y <= displayRange; y++) {
                     if (playerX + x >= 0 && playerX + x < map.getWidth()
                         && playerY + y >= 0 && playerY + y < map.getHeight()) {
                         Cell cell = map.getCell(playerX + x, playerY + y);

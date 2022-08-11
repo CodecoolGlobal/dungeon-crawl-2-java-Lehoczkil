@@ -5,7 +5,6 @@ import com.codecool.dungeoncrawl.display.Display;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.actors.Boss;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.vdurmont.emoji.EmojiParser;
@@ -145,6 +144,7 @@ public class Main extends Application {
                 Display.displayGame(primaryStage, winningScene);
             }
         }
+        moveEnemies();
         if (!map.getPlayer().isAlive()) {
             Scene endGame = Display.createEndGameScene(primaryStage);
             endGame.setOnKeyPressed(KeyEvent -> {
@@ -158,7 +158,6 @@ public class Main extends Application {
             refresh();
             currentMap++;
         } else {
-            moveEnemies();
             context.setFill(Color.color(0.28, 0.18, 0.24));
             context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
             int playerX = player.getCell().getX();

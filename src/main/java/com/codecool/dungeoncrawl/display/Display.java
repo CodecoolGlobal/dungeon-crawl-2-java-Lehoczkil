@@ -26,11 +26,11 @@ public class Display {
         Label health = new Label("Health: ");
         health.setTextFill(Color.WHITE);
         health.setStyle("-fx-font-size: " + fontSize);
-        healthLabel.setTextFill(Color.WHITE);
+        healthLabel.setTextFill(Color.RED);
         healthLabel.setStyle("-fx-font-size: " + fontSize);
 
         ui.add(health, 0, 0);
-        ui.add(healthLabel, 1, 0);
+        ui.add(healthLabel, 0, 1);
 
         Label inventory = new Label("\nInventory:\n");
         inventory.setTextFill(Color.WHITE);
@@ -38,9 +38,9 @@ public class Display {
         playerInventory.setTextFill(Color.WHITE);
         playerInventory.setStyle("-fx-font-size: " + fontSize);
 
-        ui.add(inventory, 0, 1);
-        ui.add(playerInventory, 0, 2);
-        ui.add(new Label("\n"), 0, 3);
+        ui.add(inventory, 0, 2);
+        ui.add(playerInventory, 0, 3);
+        ui.add(new Label("\n"), 0, 4);
 
         Label pickUp = new Label("Pick up item: F");
         pickUp.setTextFill(Color.WHITE);
@@ -49,8 +49,8 @@ public class Display {
         attack.setTextFill(Color.WHITE);
         attack.setStyle("-fx-font-size: " + fontSize);
 
-        ui.add(pickUp, 0, 4);
-        ui.add(attack, 0, 5);
+        ui.add(pickUp, 0, 5);
+        ui.add(attack, 0, 6);
         return ui;
     }
 
@@ -77,6 +77,20 @@ public class Display {
         gameOver.setCenter(gameOverText);
 
         return new Scene(gameOver);
+    }
+
+    public static Scene createWinScene(Stage stage) {
+        BorderPane winScene = new BorderPane();
+        winScene.setMinWidth(stage.getWidth());
+        winScene.setMinHeight(stage.getHeight());
+        winScene.setStyle("-fx-background-color: #ffffff");
+
+        Label winSceneText = new Label("CONGRATS");
+        winSceneText.setTextFill(Color.RED);
+        winSceneText.setStyle("-fx-font-size: 80");
+        winScene.setCenter(winSceneText);
+
+        return new Scene(winScene);
     }
 
     public static void displayGame(Stage primaryStage, Scene scene) {

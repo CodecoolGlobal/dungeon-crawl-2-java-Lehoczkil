@@ -72,7 +72,9 @@ public class Player extends Actor {
 
     @Override
     public void takeDamage(int damage) {
-        if (hasArmor) damage /= 2;
+        if (hasArmor) {
+            damage /= 2;
+        }
         health -= damage;
         if (health <= 0) {
             isAlive = false;

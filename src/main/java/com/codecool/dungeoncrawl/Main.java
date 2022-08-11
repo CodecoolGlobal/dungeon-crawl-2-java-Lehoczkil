@@ -70,7 +70,6 @@ public class Main extends Application {
             player.getCell().getNeighbor(dx, dy).getActor().getTileName().equals("boss"))) {
                 Enemy enemy = (Enemy) player.getCell().getNeighbor(dx, dy).getActor();
                 player.attack(enemy);
-                enemy.attack(player);
                 if (!enemy.isAlive()) {
                     player.getCell().getNeighbor(dx, dy).setActor(null);
                 }
@@ -166,7 +165,7 @@ public class Main extends Application {
                 }
             }
         }
-        if (map.getPlayer().getHealth() >= 0) {
+        if (map.getPlayer().getHealth() > 0) {
             healthLabel.setText(EmojiParser.parseToUnicode(":heart:").repeat(map.getPlayer().getHealth()));
         }
     }

@@ -38,6 +38,7 @@ public class Tiles {
         tileMap.put("boss", new Tile(30,6));
         tileMap.put("ghost", new Tile(27, 6));
         tileMap.put("heal", new Tile(23,22));
+        tileMap.put("coin", new Tile(9,26));
     }
 
     public static void updatePlayerImage(int col) {

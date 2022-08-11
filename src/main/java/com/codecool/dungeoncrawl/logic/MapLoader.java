@@ -76,6 +76,10 @@ public class MapLoader {
                             cell.setType(CellType.FLOOR);
                             new HealPotion(cell);
                             break;
+                        case 'C':
+                            cell.setType(CellType.FLOOR);
+                            new Coin(cell);
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }

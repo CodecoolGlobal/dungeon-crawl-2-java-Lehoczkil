@@ -8,6 +8,7 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Boss;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Coin;
 import com.vdurmont.emoji.EmojiParser;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -74,6 +75,9 @@ public class Main extends Application {
                 player.attack(enemy);
                 if (!enemy.isAlive()) {
                     player.getCell().getNeighbor(dx, dy).setActor(null);
+                    if (enemy.getTileName() == "skeleton") {
+                        player.getCell().getNeighbor(dx, dy).setItem(new Coin(enemy.getCell()));
+                    }
                 }
         }
     }

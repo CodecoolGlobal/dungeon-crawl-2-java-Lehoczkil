@@ -84,11 +84,14 @@ public class Display {
         winScene.setMinWidth(stage.getWidth());
         winScene.setMinHeight(stage.getHeight());
         winScene.setStyle("-fx-background-color: #ffffff");
-
         Label winSceneText = new Label("CONGRATS");
         winSceneText.setTextFill(Color.RED);
         winSceneText.setStyle("-fx-font-size: 80");
+        Label winSceneStats = new Label("Coins collected: " + Manager.getItems().get("coin"));
+        winSceneStats.setTextFill(Color.RED);
+        winSceneStats.setStyle("-fx-font-size: 40");
         winScene.setCenter(winSceneText);
+        winScene.setBottom(winSceneStats);
 
         return new Scene(winScene);
     }

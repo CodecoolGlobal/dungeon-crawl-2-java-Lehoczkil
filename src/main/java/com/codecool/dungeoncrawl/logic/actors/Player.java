@@ -25,7 +25,7 @@ public class Player extends Actor {
     }
 
     public void pickUp(Item item) {
-        if (item.getTileName().equals("heal")){
+        if (item.getTileName().equals("heal") && health <=13){
             health += 3;
         }
         else {

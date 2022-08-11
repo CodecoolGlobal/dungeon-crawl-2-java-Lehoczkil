@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 public class Ghost extends Enemy{
     public Ghost(Cell cell) {
         super(cell);
+        this.health = 12;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class Display {
         Label health = new Label("Health: ");
         health.setTextFill(Color.WHITE);
         health.setStyle("-fx-font-size: " + fontSize);
-        healthLabel.setTextFill(Color.WHITE);
+        healthLabel.setTextFill(Color.RED);
         healthLabel.setStyle("-fx-font-size: " + fontSize);
 
         ui.add(health, 0, 0);
@@ -77,6 +77,20 @@ public class Display {
         gameOver.setCenter(gameOverText);
 
         return new Scene(gameOver);
+    }
+
+    public static Scene createWinScene(Stage stage) {
+        BorderPane winScene = new BorderPane();
+        winScene.setMinWidth(stage.getWidth());
+        winScene.setMinHeight(stage.getHeight());
+        winScene.setStyle("-fx-background-color: #ffffff");
+
+        Label winSceneText = new Label("CONGRATS");
+        winSceneText.setTextFill(Color.RED);
+        winSceneText.setStyle("-fx-font-size: 80");
+        winScene.setCenter(winSceneText);
+
+        return new Scene(winScene);
     }
 
     public static void displayGame(Stage primaryStage, Scene scene) {

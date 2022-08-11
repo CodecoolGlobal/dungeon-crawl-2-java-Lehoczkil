@@ -149,7 +149,8 @@ public class Main extends Application {
                 }
             }
         }
-
-        healthLabel.setText(EmojiParser.parseToUnicode(":heart:").repeat(map.getPlayer().getHealth()));
+        if (map.getPlayer().getHealth() >= 0) {
+            healthLabel.setText(EmojiParser.parseToUnicode(":heart:").repeat(map.getPlayer().getHealth()));
+        }
     }
 }

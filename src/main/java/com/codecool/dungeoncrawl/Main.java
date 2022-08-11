@@ -47,7 +47,7 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
 
-        Scene menu = Display.createMenu(primaryStage, healthLabel, canvas, inventory);
+        Scene menu = Display.createMenu(primaryStage);
         Button newGame = (Button) menu.lookup("#gameBtn");
         newGame.setOnAction(ActionEvent -> {
             Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);

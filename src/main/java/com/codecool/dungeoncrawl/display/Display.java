@@ -116,7 +116,7 @@ public class Display {
         inventory.setText(sb.toString());
     }
 
-    public static Scene createMenu (Stage primaryStage, Label healthLabel, Canvas canvas, Label inventory) {
+    public static Scene createMenu (Stage primaryStage) {
 
         Button newGame = new Button();
         newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);

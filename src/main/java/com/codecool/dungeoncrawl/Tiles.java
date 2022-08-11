@@ -44,10 +44,10 @@ public class Tiles {
         tileMap.replace("player", new Tile(col, 0));
     }
 
-    public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {
+    public static void drawTile(GraphicsContext context, Drawable d, double x, double y) {
         Tile tile = tileMap.get(d.getTileName());
         context.drawImage(tileset, tile.x, tile.y, tile.w, tile.h,
-                x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
+                x, y, TILE_WIDTH, TILE_WIDTH);
     }
 
     public static void setTileWidth(double tileWidth) {

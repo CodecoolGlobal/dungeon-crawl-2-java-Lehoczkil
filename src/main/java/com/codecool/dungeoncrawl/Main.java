@@ -14,6 +14,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -51,8 +52,8 @@ public class Main extends Application {
             Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);
             scene.setOnKeyPressed(this::onKeyPressed);
             Display.displayGame(primaryStage, scene);
-            canvas.setHeight(map.getHeight() * Tiles.TILE_WIDTH);
-            canvas.setWidth(map.getWidth() * Tiles.TILE_WIDTH);
+            canvas.setHeight(9 * Tiles.TILE_WIDTH);
+            canvas.setWidth(9 * Tiles.TILE_WIDTH);
             refresh();
         });
         Button exit = (Button) menu.lookup("#exitBtn");
@@ -69,7 +70,6 @@ public class Main extends Application {
             player.getCell().getNeighbor(dx, dy).getActor().getTileName().equals("boss"))) {
                 Enemy enemy = (Enemy) player.getCell().getNeighbor(dx, dy).getActor();
                 player.attack(enemy);
-                enemy.attack(player);
                 if (!enemy.isAlive()) {
                     player.getCell().getNeighbor(dx, dy).setActor(null);
                 }
@@ -120,6 +120,7 @@ public class Main extends Application {
 
     private void moveEnemies() {
         for (Enemy enemy: map.getEnemies()) {
+            enemy.attackPlayer(player);
             enemy.move();
         }
     }
@@ -127,6 +128,11 @@ public class Main extends Application {
     private void refresh() {
         if (!map.getPlayer().isAlive()) {
             Scene endGame = Display.createEndGameScene(primaryStage);
+            endGame.setOnKeyPressed(KeyEvent -> {
+                if (KeyEvent.getCode() == KeyCode.ESCAPE) {
+                    primaryStage.close();
+                }
+            });
             Display.displayGame(primaryStage, endGame);
         } else if (map.isLevelOver() && currentMap < 3) {
             map = MapLoader.loadNextLevel(currentMap, player);
@@ -134,22 +140,32 @@ public class Main extends Application {
             currentMap++;
         } else {
             moveEnemies();
-            context.setFill(Color.BLACK);
+            context.setFill(Color.color(0.28, 0.18, 0.24));
             context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            for (int x = 0; x < map.getWidth(); x++) {
-                for (int y = 0; y < map.getHeight(); y++) {
-                    Cell cell = map.getCell(x, y);
-                    if (cell.getActor() != null) {
-                        Tiles.drawTile(context, cell.getActor(), x, y);
-                    } else if (cell.getItem() != null) {
-                        Tiles.drawTile(context, cell.getItem(), x, y);
-                    } else {
-                        Tiles.drawTile(context, cell, x, y);
+            int playerX = player.getCell().getX();
+            int playerY = player.getCell().getY();
+            double canvasX = canvas.getWidth() / 2 - Tiles.TILE_WIDTH / 2;
+            double canvasY = canvas.getHeight() / 2 - Tiles.TILE_WIDTH / 2;
+            for (int x = -4; x < 5; x++) {
+                for (int y = -4; y < 5; y++) {
+                    if (playerX + x >= 0 && playerX + x < map.getWidth()
+                        && playerY + y >= 0 && playerY + y < map.getHeight()) {
+                        Cell cell = map.getCell(playerX + x, playerY + y);
+                        if (cell.getActor() != null) {
+                            Tiles.drawTile(context, cell.getActor(), canvasX + (x * Tiles.TILE_WIDTH),
+                                    canvasY + (y * Tiles.TILE_WIDTH));
+                        } else if (cell.getItem() != null) {
+                            Tiles.drawTile(context, cell.getItem(), canvasX + (x * Tiles.TILE_WIDTH),
+                                    canvasY + (y * Tiles.TILE_WIDTH));
+                        } else {
+                            Tiles.drawTile(context, cell, canvasX + (x * Tiles.TILE_WIDTH),
+                                    canvasY + (y * Tiles.TILE_WIDTH));
+                        }
                     }
                 }
             }
         }
-        if (map.getPlayer().getHealth() >= 0) {
+        if (map.getPlayer().getHealth() > 0) {
             healthLabel.setText(EmojiParser.parseToUnicode(":heart:").repeat(map.getPlayer().getHealth()));
         }
     }

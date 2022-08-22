@@ -17,10 +17,10 @@ public class GameDatabaseManager {
         playerDao = new PlayerDaoJdbc(dataSource);
     }
 
-    public PlayerModel savePlayer(Player player) {
+    public void savePlayer(Player player) {
         PlayerModel model = new PlayerModel(player);
         model = playerDao.add(model);
-        return model;
+        player.setId(model.getId());
     }
 
     public static DataSource connect() throws SQLException {

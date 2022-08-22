@@ -207,7 +207,6 @@ public class Main extends Application {
     private void initPlayer() {
         player = map.getPlayer();
         player.setGdm(gdm);
-        PlayerModel model = gdm.savePlayer(player);
-        player.setId(model.getId());
+        gdm.savePlayer(player);
     }
 }

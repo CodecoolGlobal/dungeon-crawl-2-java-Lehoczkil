@@ -1,7 +1,7 @@
 package com.codecool.dungeoncrawl.display;
 
 import com.codecool.dungeoncrawl.Tiles;
-import com.codecool.dungeoncrawl.database.Manager;
+import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,8 +16,13 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 
 public class Display {
+    private GameDatabaseManager gdm;
 
-    private static GridPane generateUI(Label healthLabel, Label playerInventory) {
+    public Display(GameDatabaseManager gdm) {
+        this.gdm = gdm;
+    }
+
+    private GridPane generateUI(Label healthLabel, Label playerInventory) {
         int fontSize = 50;
         GridPane ui = new GridPane();
         ui.setPrefWidth(600);
@@ -54,7 +59,7 @@ public class Display {
         return ui;
     }
 
-    public static Scene generateGameWindow(Label healthLabel, Canvas canvas, Label inventory) {
+    public Scene generateGameWindow(Label healthLabel, Canvas canvas, Label inventory) {
         GridPane ui = generateUI(healthLabel, inventory);
         BorderPane borderPane = new BorderPane();
         borderPane.setStyle("-fx-background-color: #472d3c");
@@ -65,7 +70,7 @@ public class Display {
         return new Scene(borderPane);
     }
 
-    public static Scene createEndGameScene(Stage stage) {
+    public Scene createEndGameScene(Stage stage) {
         BorderPane gameOver = new BorderPane();
         gameOver.setMinWidth(stage.getWidth());
         gameOver.setMinHeight(stage.getHeight());
@@ -79,7 +84,7 @@ public class Display {
         return new Scene(gameOver);
     }
 
-    public static Scene createWinScene(Stage stage) {
+    public Scene createWinScene(Stage stage) {
         BorderPane winScene = new BorderPane();
         winScene.setMinWidth(stage.getWidth());
         winScene.setMinHeight(stage.getHeight());
@@ -87,7 +92,7 @@ public class Display {
         Label winSceneText = new Label("CONGRATS");
         winSceneText.setTextFill(Color.RED);
         winSceneText.setStyle("-fx-font-size: 80");
-        Label winSceneStats = new Label("Coins collected: " + Manager.getItems().get("coin"));
+        Label winSceneStats = new Label("Coins collected: " + gdm.manager.getItems().get("coin"));
         winSceneStats.setTextFill(Color.RED);
         winSceneStats.setStyle("-fx-font-size: 40");
         winScene.setCenter(winSceneText);
@@ -96,7 +101,7 @@ public class Display {
         return new Scene(winScene);
     }
 
-    public static void displayGame(Stage primaryStage, Scene scene) {
+    public void displayGame(Stage primaryStage, Scene scene) {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.setFullScreen(true);
@@ -104,8 +109,8 @@ public class Display {
         Tiles.setTileWidth(primaryStage.getHeight()/10);
     }
 
-    public static void updateInventory (Label inventory) {
-        HashMap<String, Integer> items = Manager.getItems();
+    public void updateInventory (Label inventory) {
+        HashMap<String, Integer> items = gdm.manager.getItems();
         StringBuilder sb = new StringBuilder();
         if (items.size() > 0) {
             for (String item: items.keySet()) {
@@ -119,7 +124,7 @@ public class Display {
         inventory.setText(sb.toString());
     }
 
-    public static Scene createMenu (Stage primaryStage) {
+    public Scene createMenu (Stage primaryStage) {
 
         Button newGame = new Button();
         newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);

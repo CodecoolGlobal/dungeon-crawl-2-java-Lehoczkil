@@ -9,9 +9,11 @@ import java.sql.SQLException;
 
 public class GameDatabaseManager {
     private PlayerDao playerDao;
+    public Manager manager;
 
     public void setup() throws SQLException {
         DataSource dataSource = connect();
+        manager = new Manager(dataSource);
         playerDao = new PlayerDaoJdbc(dataSource);
     }
 
@@ -20,20 +22,23 @@ public class GameDatabaseManager {
         playerDao.add(model);
     }
 
-    private DataSource connect() throws SQLException {
+    public static DataSource connect() throws SQLException {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        String dbName = "test";
-        String user = "test";
-        String password = "test";
+        dataSource.setDatabaseName(System.getenv("DB_NAME"));
+        dataSource.setUser(System.getenv("DB_USER"));
+        dataSource.setPassword(System.getenv("DB_PW"));
 
-        dataSource.setDatabaseName(dbName);
-        dataSource.setUser(user);
-        dataSource.setPassword(password);
-
-        System.out.println("Trying to connect");
+        System.out.println("Trying to connect...");
         dataSource.getConnection().close();
-        System.out.println("Connection ok.");
-
+        System.out.println("Connection OK");
         return dataSource;
+    }
+
+    public void run() {
+        try {
+            setup();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.codecool.dungeoncrawl;
 
-import com.codecool.dungeoncrawl.database.Manager;
+import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.display.Display;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
@@ -36,24 +36,29 @@ public class Main extends Application {
     Player player;
     private final int displayRange = 5;
 
+    private GameDatabaseManager gdm;
+    private Display display;
+
     public static void main(String[] args) {
-        new Manager().setup();
-        Manager.restoreDB("src/main/java/com/codecool/dungeoncrawl/database/inventory.sql");
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
+        gdm = new GameDatabaseManager();
+        gdm.run();
+        display = new Display(gdm);
         player = map.getPlayer();
+        player.setGdm(gdm);
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
 
-        Scene menu = Display.createMenu(primaryStage);
+        Scene menu = display.createMenu(primaryStage);
         Button newGame = (Button) menu.lookup("#gameBtn");
         newGame.setOnAction(ActionEvent -> {
-            Scene scene = Display.generateGameWindow(healthLabel, canvas, inventory);
+            Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
             scene.setOnKeyPressed(this::onKeyPressed);
-            Display.displayGame(primaryStage, scene);
+            display.displayGame(primaryStage, scene);
             canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
             canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
             refresh();
@@ -61,7 +66,7 @@ public class Main extends Application {
         Button exit = (Button) menu.lookup("#exitBtn");
         exit.setOnAction(ActionEvent -> primaryStage.close());
 
-        Display.displayGame(primaryStage, menu);
+        display.displayGame(primaryStage, menu);
 
     }
 
@@ -118,7 +123,7 @@ public class Main extends Application {
                 primaryStage.close();
         }
         if (!moved) {
-            Display.updateInventory(inventory);
+            display.updateInventory(inventory);
             refresh();
         }
     }
@@ -139,24 +144,24 @@ public class Main extends Application {
                 }
             }
             if (!isBossAlive) {
-                Scene winningScene = Display.createWinScene(primaryStage);
+                Scene winningScene = display.createWinScene(primaryStage);
                 winningScene.setOnKeyPressed(KeyEvent -> {
                     if (KeyEvent.getCode() == KeyCode.ESCAPE) {
                         primaryStage.close();
                     }
                 });
-                Display.displayGame(primaryStage, winningScene);
+                display.displayGame(primaryStage, winningScene);
             }
         }
         moveEnemies();
         if (!map.getPlayer().isAlive()) {
-            Scene endGame = Display.createEndGameScene(primaryStage);
+            Scene endGame = display.createEndGameScene(primaryStage);
             endGame.setOnKeyPressed(KeyEvent -> {
                 if (KeyEvent.getCode() == KeyCode.ESCAPE) {
                     primaryStage.close();
                 }
             });
-            Display.displayGame(primaryStage, endGame);
+            display.displayGame(primaryStage, endGame);
         } else if (map.isLevelOver() && currentMap < 3) {
             map = MapLoader.loadNextLevel(currentMap, player);
             refresh();

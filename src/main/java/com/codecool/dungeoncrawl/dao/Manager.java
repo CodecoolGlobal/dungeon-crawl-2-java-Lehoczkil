@@ -1,7 +1,6 @@
-package com.codecool.dungeoncrawl.database;
+package com.codecool.dungeoncrawl.dao;
 
 import javax.sql.DataSource;
-import java.beans.Statement;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,29 +14,27 @@ public class Manager {
 
     static DataSource dataSource;
 
-    public void setup() {
-        try {
-            dataSource = new Connect().connect();
-        } catch (SQLException e) {
-            System.err.println("Could not connect to database, gigamega failure!");
-        }
+
+    public Manager(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    private static void insertItem(String name) {
+    private void insertItem(String name) {
         try(Connection connection = dataSource.getConnection()) {
             String SQL = "INSERT INTO inventory" +
-                    "(name, quantity)" +
-                    "VALUES (?, ?)";
+                    "(player_id, name, quantity)" +
+                    "VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(SQL);
-            statement.setString(1, name);
-            statement.setInt(2, 1);
+            statement.setInt(1, 1);
+            statement.setString(2, name);
+            statement.setInt(3, 1);
             statement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    private static void incrementItem(String name) {
+    private void incrementItem(String name) {
         try(Connection connection = dataSource.getConnection()) {
             String SQL = "UPDATE inventory " +
                     "SET " +
@@ -52,7 +49,7 @@ public class Manager {
         }
     }
     
-    private static void deleteGarbageItems() {
+    private void deleteGarbageItems() {
         try(Connection connection = dataSource.getConnection()) {
             String SQL = "DELETE FROM inventory " +
                     "WHERE quantity <= 0";
@@ -63,7 +60,7 @@ public class Manager {
         }
     }
     
-    public static HashMap<String, Integer> getItems() {
+    public HashMap<String, Integer> getItems() {
         try(Connection connection = dataSource.getConnection()) {
             String SQL = "SELECT name, quantity " +
                     "FROM inventory";
@@ -78,7 +75,7 @@ public class Manager {
         }
     }
 
-    public static void addItem(String name) {
+    public void addItem(String name) {
         if (hasItem(name)) {
             incrementItem(name);
         } else {
@@ -86,7 +83,7 @@ public class Manager {
         }
     }
 
-    public static void decrementItem(String name) {
+    public void decrementItem(String name) {
         try(Connection connection = dataSource.getConnection()) {
             String SQL = "UPDATE inventory " +
                     "SET " +
@@ -102,7 +99,7 @@ public class Manager {
         deleteGarbageItems();
     }
 
-    public static boolean hasItem(String name) {
+    public boolean hasItem(String name) {
         try(Connection connection = dataSource.getConnection()) {
             String SQL = "SELECT name, quantity " +
                     "FROM inventory " +
@@ -116,7 +113,7 @@ public class Manager {
         }
     }
 
-    public static void restoreDB (String SQLScriptPath) {
+    public void restoreDB (String SQLScriptPath) {
         try (Connection connection = dataSource.getConnection()) {
             try {
                 BufferedReader in = new BufferedReader(new FileReader(SQLScriptPath));

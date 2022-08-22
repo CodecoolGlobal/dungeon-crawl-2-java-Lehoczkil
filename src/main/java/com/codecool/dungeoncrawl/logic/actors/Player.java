@@ -1,7 +1,8 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.Tiles;
-import com.codecool.dungeoncrawl.database.Manager;
+import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
+import com.codecool.dungeoncrawl.dao.Manager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Item;
@@ -9,12 +10,21 @@ import com.codecool.dungeoncrawl.logic.items.Item;
 public class Player extends Actor {
     private final int MAX_HEALTH;
 
+    private final int id;
+
+    private final String name;
+
     private boolean hasSword = false;
     private boolean hasArmor = false;
     private PlayerState playerState = PlayerState.NAKED;
 
+    private GameDatabaseManager gdm;
+
+
     public Player(Cell cell) {
         super(cell);
+        this.id = 1;
+        this.name = "player";
         MAX_HEALTH = 12;
     }
 
@@ -31,7 +41,7 @@ public class Player extends Actor {
             health += 3;
             health = Math.min(health, MAX_HEALTH);
         } else if (!item.getTileName().equals("heal")){
-            Manager.addItem(item.getTileName());
+            gdm.manager.addItem(item.getTileName());
         }
         if (item.getTileName().equals("sword")) {
             hasSword = true;
@@ -64,9 +74,9 @@ public class Player extends Actor {
             cell.setActor(null);
             nextCell.setActor(this);
             cell = nextCell;
-        } else if (nextCell.getItem() != null && nextCell.getItem().getTileName() == "closed door" && Manager.hasItem("key")) {
+        } else if (nextCell.getItem() != null && nextCell.getItem().getTileName() == "closed door" && gdm.manager.hasItem("key")) {
             ((Door) nextCell.getItem()).setOpen();
-            Manager.decrementItem("key");
+            gdm.manager.decrementItem("key");
             return false;
         }
         return true;
@@ -83,7 +93,15 @@ public class Player extends Actor {
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setCell(Cell cell) {
         this.cell = cell;
+    }
+
+    public void setGdm(GameDatabaseManager gdm) {
+        this.gdm = gdm;
     }
 }

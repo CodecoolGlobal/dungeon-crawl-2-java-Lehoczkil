@@ -17,3 +17,14 @@ CREATE TABLE public.player (
 
 ALTER TABLE ONLY public.game_state
     ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id);
+
+DROP TABLE IF EXISTS public.inventory;
+
+CREATE TABLE public.inventory (
+    player_id INTEGER NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    quantity INTEGER
+);
+
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id);

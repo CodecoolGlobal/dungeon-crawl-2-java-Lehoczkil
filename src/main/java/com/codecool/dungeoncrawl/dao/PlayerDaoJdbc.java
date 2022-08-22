@@ -7,14 +7,14 @@ import java.sql.*;
 import java.util.List;
 
 public class PlayerDaoJdbc implements PlayerDao {
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public PlayerDaoJdbc(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
-    public void add(PlayerModel player) {
+    public PlayerModel add(PlayerModel player) {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "INSERT INTO player (player_name, hp, x, y) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -29,6 +29,7 @@ public class PlayerDaoJdbc implements PlayerDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return player;
     }
 
     @Override

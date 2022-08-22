@@ -2,7 +2,6 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.Tiles;
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
-import com.codecool.dungeoncrawl.dao.Manager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Item;
@@ -10,7 +9,7 @@ import com.codecool.dungeoncrawl.logic.items.Item;
 public class Player extends Actor {
     private final int MAX_HEALTH;
 
-    private final int id;
+    private int id;
 
     private final String name;
 
@@ -23,7 +22,6 @@ public class Player extends Actor {
 
     public Player(Cell cell) {
         super(cell);
-        this.id = 1;
         this.name = "player";
         MAX_HEALTH = 12;
     }
@@ -41,7 +39,7 @@ public class Player extends Actor {
             health += 3;
             health = Math.min(health, MAX_HEALTH);
         } else if (!item.getTileName().equals("heal")){
-            gdm.manager.addItem(item.getTileName());
+            gdm.itemsManagerDaoJdbc.addItem(item.getTileName(), id);
         }
         if (item.getTileName().equals("sword")) {
             hasSword = true;
@@ -74,9 +72,9 @@ public class Player extends Actor {
             cell.setActor(null);
             nextCell.setActor(this);
             cell = nextCell;
-        } else if (nextCell.getItem() != null && nextCell.getItem().getTileName() == "closed door" && gdm.manager.hasItem("key")) {
+        } else if (nextCell.getItem() != null && nextCell.getItem().getTileName() == "closed door" && gdm.itemsManagerDaoJdbc.hasItem("key", id)) {
             ((Door) nextCell.getItem()).setOpen();
-            gdm.manager.decrementItem("key");
+            gdm.itemsManagerDaoJdbc.decrementItem("key", id);
             return false;
         }
         return true;
@@ -103,5 +101,13 @@ public class Player extends Actor {
 
     public void setGdm(GameDatabaseManager gdm) {
         this.gdm = gdm;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

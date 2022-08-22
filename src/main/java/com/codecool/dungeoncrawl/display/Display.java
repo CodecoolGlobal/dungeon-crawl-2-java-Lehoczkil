@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 public class Display {
     private GameDatabaseManager gdm;
+    private int player_id;
 
     public Display(GameDatabaseManager gdm) {
         this.gdm = gdm;
@@ -92,7 +93,7 @@ public class Display {
         Label winSceneText = new Label("CONGRATS");
         winSceneText.setTextFill(Color.RED);
         winSceneText.setStyle("-fx-font-size: 80");
-        Label winSceneStats = new Label("Coins collected: " + gdm.manager.getItems().get("coin"));
+        Label winSceneStats = new Label("Coins collected: " + gdm.itemsManagerDaoJdbc.getItems(player_id).get("coin"));
         winSceneStats.setTextFill(Color.RED);
         winSceneStats.setStyle("-fx-font-size: 40");
         winScene.setCenter(winSceneText);
@@ -110,7 +111,7 @@ public class Display {
     }
 
     public void updateInventory (Label inventory) {
-        HashMap<String, Integer> items = gdm.manager.getItems();
+        HashMap<String, Integer> items = gdm.itemsManagerDaoJdbc.getItems(player_id);
         StringBuilder sb = new StringBuilder();
         if (items.size() > 0) {
             for (String item: items.keySet()) {
@@ -153,5 +154,9 @@ public class Display {
         menuPane.setAlignment(Pos.CENTER);
 
         return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
+    }
+
+    public void setPlayer_id(int player_id) {
+        this.player_id = player_id;
     }
 }

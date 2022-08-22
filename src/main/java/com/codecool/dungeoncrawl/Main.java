@@ -8,6 +8,7 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Coin;
+import com.codecool.dungeoncrawl.model.PlayerModel;
 import com.vdurmont.emoji.EmojiParser;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private Scene MAIN_MENU;
     int currentMap = 1;
     GameMap map = MapLoader.loadMap("/map.txt", null);
     Canvas canvas = new Canvas(
@@ -45,11 +47,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        gdm = new GameDatabaseManager();
-        gdm.run();
-        display = new Display(gdm);
-        player = map.getPlayer();
-        player.setGdm(gdm);
+        initGameState();
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
 
@@ -61,11 +59,14 @@ public class Main extends Application {
             display.displayGame(primaryStage, scene);
             canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
             canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
+            initPlayer();
+            display.setPlayer_id(player.getId());
             refresh();
         });
         Button exit = (Button) menu.lookup("#exitBtn");
         exit.setOnAction(ActionEvent -> primaryStage.close());
 
+        this.MAIN_MENU = menu;
         display.displayGame(primaryStage, menu);
 
     }
@@ -120,7 +121,7 @@ public class Main extends Application {
                 checkForEnemy(1,0);
                 break;
             case ESCAPE:
-                primaryStage.close();
+                display.displayGame(primaryStage, MAIN_MENU);
         }
         if (!moved) {
             display.updateInventory(inventory);
@@ -195,5 +196,18 @@ public class Main extends Application {
         if (map.getPlayer().getHealth() > 0) {
             healthLabel.setText(EmojiParser.parseToUnicode(":heart:").repeat(map.getPlayer().getHealth()));
         }
+    }
+
+    private void initGameState() {
+        this.gdm = new GameDatabaseManager();
+        this.gdm.run();
+        display = new Display(gdm);
+    }
+
+    private void initPlayer() {
+        player = map.getPlayer();
+        player.setGdm(gdm);
+        PlayerModel model = gdm.savePlayer(player);
+        player.setId(model.getId());
     }
 }

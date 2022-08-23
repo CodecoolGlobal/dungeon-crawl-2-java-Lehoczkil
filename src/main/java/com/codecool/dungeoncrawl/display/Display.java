@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import java.util.HashMap;
 
@@ -159,4 +160,5 @@ public class Display {
     public void setPlayer_id(int player_id) {
         this.player_id = player_id;
     }
+
 }

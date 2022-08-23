@@ -16,6 +16,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -54,14 +55,23 @@ public class Main extends Application {
         Scene menu = display.createMenu(primaryStage);
         Button newGame = (Button) menu.lookup("#gameBtn");
         newGame.setOnAction(ActionEvent -> {
-            Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
-            scene.setOnKeyPressed(this::onKeyPressed);
-            display.displayGame(primaryStage, scene);
-            canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
-            canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
-            initPlayer();
-            display.setPlayer_id(player.getId());
-            refresh();
+            TextInputDialog td = new TextInputDialog("Enter Player name:");
+            td.setHeaderText("Choose a name");
+            td.show();
+            String name = td.getEditor().getText();
+            System.out.println(name);
+
+
+
+
+//            Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
+//            scene.setOnKeyPressed(this::onKeyPressed);
+//            display.displayGame(primaryStage, scene);
+//            canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
+//            canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
+//            initPlayer();
+//            display.setPlayer_id(player.getId());
+//            refresh();
         });
         Button exit = (Button) menu.lookup("#exitBtn");
         exit.setOnAction(ActionEvent -> primaryStage.close());

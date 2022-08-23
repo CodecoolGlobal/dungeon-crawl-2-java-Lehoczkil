@@ -5,7 +5,7 @@ ALTER TABLE IF EXISTS ONLY public.items DROP CONSTRAINT IF EXISTS fk_player_id C
 DROP TABLE IF EXISTS public.game_state;
 CREATE TABLE public.game_state (
     id serial NOT NULL PRIMARY KEY,
-    current_map text NOT NULL,
+    current_map bytea NOT NULL,
     saved_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     player_id integer NOT NULL
 );

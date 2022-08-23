@@ -3,9 +3,10 @@ package com.codecool.dungeoncrawl.logic;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GameMap {
+public class GameMap implements Serializable {
     private int width;
     private int height;
     private Cell[][] cells;
@@ -68,5 +69,9 @@ public class GameMap {
             }
         }
         return false;
+    }
+
+    public Cell[][] getCells() {
+        return cells;
     }
 }

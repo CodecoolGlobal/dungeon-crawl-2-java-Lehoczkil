@@ -5,9 +5,10 @@ import com.codecool.dungeoncrawl.model.PlayerModel;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
+import java.io.Serializable;
 import java.sql.SQLException;
 
-public class GameDatabaseManager {
+public class GameDatabaseManager implements Serializable {
     private PlayerDaoJdbc playerDao;
     public ItemsManagerDaoJdbc itemsManagerDaoJdbc;
 

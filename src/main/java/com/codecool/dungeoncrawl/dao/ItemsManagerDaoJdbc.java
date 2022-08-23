@@ -4,13 +4,14 @@ import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class ItemsManagerDaoJdbc {
+public class ItemsManagerDaoJdbc implements Serializable {
 
     DataSource dataSource;
 

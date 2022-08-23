@@ -4,11 +4,12 @@ import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 
 import javax.sql.DataSource;
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameStateDaoJdbc implements GameStateDao {
+public class GameStateDaoJdbc implements GameStateDao, Serializable {
     @Override
     public void add(GameState state) {
 

@@ -3,11 +3,12 @@ package com.codecool.dungeoncrawl.dao;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 
 import javax.sql.DataSource;
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerDaoJdbc implements PlayerDao {
+public class PlayerDaoJdbc implements PlayerDao, Serializable {
     private final DataSource dataSource;
 
     public PlayerDaoJdbc(DataSource dataSource) {

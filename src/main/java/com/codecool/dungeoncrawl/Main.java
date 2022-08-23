@@ -59,9 +59,6 @@ public class Main extends Application {
             TextInputDialog td = new TextInputDialog("Enter Player name:");
             td.setHeaderText("Choose a name");
             Optional<String> result = td.showAndWait();
-
-         /*   Optional<String> result = Optional.of("test") ;*/
-
             result.ifPresent(res -> {
                 List<String> playerNames = gdm.getPlayerDao().getPlayerNames();
                 if (playerNames.contains(res)) {

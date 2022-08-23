@@ -8,15 +8,13 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Coin;
+import com.codecool.dungeoncrawl.model.PlayerModel;
 import com.vdurmont.emoji.EmojiParser;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -144,6 +142,18 @@ public class Main extends Application {
                 break;
             case ESCAPE:
                 display.displayGame(primaryStage, MAIN_MENU);
+            case S:
+                if (keyEvent.isControlDown()) {
+                    Alert confirmSave = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirmSave.setHeaderText("Save Game");
+                    confirmSave.setContentText("Do you want to save the game?");
+                    Optional<ButtonType> input = confirmSave.showAndWait();
+                    if (input.get().getText().equals("OK")) {
+                        PlayerModel model = new PlayerModel(player);
+                        model.setId(player.getId());
+                        gdm.getPlayerDao().update(model);
+                    }
+                }
         }
         if (!moved) {
             display.updateInventory(inventory);
@@ -232,4 +242,5 @@ public class Main extends Application {
         player.setName(name);
         gdm.savePlayer(player);
     }
+
 }

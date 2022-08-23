@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class Display {
     private GameDatabaseManager gdm;

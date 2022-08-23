@@ -8,7 +8,12 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 public class GameDatabaseManager {
-    private PlayerDao playerDao;
+    private PlayerDaoJdbc playerDao;
+
+    public PlayerDaoJdbc getPlayerDao() {
+        return playerDao;
+    }
+
     public ItemsManagerDaoJdbc itemsManagerDaoJdbc;
 
     public void setup() throws SQLException {

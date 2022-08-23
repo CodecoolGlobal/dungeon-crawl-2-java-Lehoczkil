@@ -9,14 +9,14 @@ import java.util.List;
 
 public class GameState extends BaseModel {
     private Date savedAt;
-    private String currentMap;
+    private byte[] currentMap;
     private List<String> discoveredMaps = new ArrayList<>();
     private PlayerModel player;
 
     public GameState(GameMap currentMap, Date savedAt, PlayerModel player) {
         this.savedAt = savedAt;
         this.player = player;
-        stringifyMap(currentMap);
+        serialize(currentMap);
     }
 
     public Date getSavedAt() {
@@ -27,12 +27,12 @@ public class GameState extends BaseModel {
         this.savedAt = savedAt;
     }
 
-    public String getCurrentMap() {
+    public byte[] getCurrentMap() {
         return currentMap;
     }
 
-    public void setCurrentMap(String currentMap) {
-        this.currentMap = currentMap;
+    public void setCurrentMap(GameMap currentMap) {
+        serialize(currentMap);
     }
 
     public List<String> getDiscoveredMaps() {
@@ -51,12 +51,11 @@ public class GameState extends BaseModel {
         this.player = player;
     }
 
-    private void stringifyMap(GameMap map) {
-        byte[] byteMap = SerializationUtils.serialize(map);
-        StringBuilder stringMap = new StringBuilder();
-        for (byte elem: byteMap) {
-            stringMap.append(elem).append("\n");
-        }
-        this.currentMap = stringMap.toString();
+    private void serialize(GameMap map) {
+        this.currentMap = SerializationUtils.serialize(map);
+    }
+
+    public GameMap deSerialize(byte[] map) {
+        return SerializationUtils.deserialize(currentMap);
     }
 }

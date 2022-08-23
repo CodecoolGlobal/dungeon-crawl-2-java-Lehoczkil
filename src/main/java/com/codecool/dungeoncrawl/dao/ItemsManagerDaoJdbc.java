@@ -117,23 +117,4 @@ public class ItemsManagerDaoJdbc {
         }
     }
 
-    public void restoreDB (String SQLScriptPath) {
-        try (Connection connection = dataSource.getConnection()) {
-            try {
-                BufferedReader in = new BufferedReader(new FileReader(SQLScriptPath));
-                String str;
-                StringBuffer sb = new StringBuffer();
-                while ((str = in.readLine()) != null) {
-                    sb.append(str).append("\n");
-                }
-                in.close();
-                PreparedStatement stmt = connection.prepareStatement(sb.toString());
-                stmt.executeUpdate();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (SQLException throwables) {
-            throw new RuntimeException();
-        }
-    }
 }

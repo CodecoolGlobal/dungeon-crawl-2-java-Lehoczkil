@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import java.util.HashMap;
 

@@ -58,8 +58,8 @@ public class Main extends Application {
         newGame.setOnAction(ActionEvent -> {
             TextInputDialog td = new TextInputDialog("Enter Player name:");
             td.setHeaderText("Choose a name");
-            Optional<String> result = td.showAndWait();
-            result.ifPresent(res -> {
+            Optional<String> inputName = td.showAndWait();
+            inputName.ifPresent(res -> {
                 List<String> playerNames = gdm.getPlayerDao().getPlayerNames();
                 if (playerNames.contains(res)) {
                     Alert takenNameAlert = new Alert(Alert.AlertType.ERROR);
@@ -68,7 +68,7 @@ public class Main extends Application {
                     takenNameAlert.show();
                 } else {
                     primaryStage.close();
-                    startGame();
+                    startGame(inputName.get());
                 }
             });
         });
@@ -82,13 +82,13 @@ public class Main extends Application {
 
     }
 
-    private void startGame() {
+    private void startGame(String name) {
         Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
         scene.setOnKeyPressed(this::onKeyPressed);
         display.displayGame(primaryStage, scene);
         canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
         canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
-        initPlayer();
+        initPlayer(name);
         display.setPlayer_id(player.getId());
         refresh();
     }
@@ -226,9 +226,10 @@ public class Main extends Application {
         display = new Display(gdm);
     }
 
-    private void initPlayer() {
+    private void initPlayer(String name) {
         player = map.getPlayer();
         player.setGdm(gdm);
+        player.setName(name);
         gdm.savePlayer(player);
     }
 }

@@ -11,7 +11,7 @@ public class Player extends Actor {
 
     private int id;
 
-    private final String name;
+    private String name;
 
     private boolean hasSword = false;
     private boolean hasArmor = false;
@@ -22,7 +22,6 @@ public class Player extends Actor {
 
     public Player(Cell cell) {
         super(cell);
-        this.name = "player";
         MAX_HEALTH = 12;
     }
 
@@ -93,6 +92,10 @@ public class Player extends Actor {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setCell(Cell cell) {

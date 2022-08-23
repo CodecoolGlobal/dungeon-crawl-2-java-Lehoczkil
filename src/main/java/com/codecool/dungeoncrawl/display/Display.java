@@ -128,6 +128,7 @@ public class Display {
     }
 
     public Scene createMenu (Stage primaryStage) {
+        List<String> players = gdm.getPlayerDao().getPlayerNames();
 
         Button newGame = new Button();
         newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
@@ -149,6 +150,9 @@ public class Display {
         loadGame.setStyle("-fx-font-size: 80");
         loadGame.setTextFill(Color.CHOCOLATE);
         loadGame.setId("loadBtn");
+        if (players.isEmpty()) {
+            loadGame.setDisable(true);
+        }
 
         Label logo = new Label("Rolling Winter Wombats Ltd");
         logo.setTextFill(Color.CORNSILK);

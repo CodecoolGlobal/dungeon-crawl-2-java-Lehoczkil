@@ -20,12 +20,10 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.SerializationUtils;
 
-import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -94,8 +92,12 @@ public class Main extends Application {
                 Button playerBtn = (Button) button;
                 playerBtn.setOnAction(ActionEvent2 -> {
                     byte[] byteMap = gdm.getGameStateDaoJdbc().get(playerBtn.getText()).get(0);
+                    int playerId = gdm.getPlayerDao().get(playerBtn.getText());
                     GameMap gameMap = SerializationUtils.deserialize(byteMap);
-                    loadGame(gameMap);
+                    Player player = gameMap.getPlayer();
+                    player.setId(playerId);
+                    player.checkGear();
+                    loadGame(gameMap, player);
                 });
             }
         });
@@ -112,18 +114,21 @@ public class Main extends Application {
         canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
         canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
         initPlayer(name);
+        PlayerModel model = new PlayerModel(player);
+        model.setId(player.getId());
+        gdm.getGameStateDaoJdbc().add(new GameState(map, new Date(System.currentTimeMillis()), model));
         display.setPlayer_id(player.getId());
         refresh();
     }
 
-    private void loadGame(GameMap map) {
+    private void loadGame(GameMap map, Player player) {
         Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
         scene.setOnKeyPressed(this::onKeyPressed);
-        this.map = map;
         display.displayGame(primaryStage, scene);
         canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
         canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
-        display.setPlayer_id(player.getId());
+        this.map = map;
+        this.player = player;
         refresh();
     }
 
@@ -178,7 +183,9 @@ public class Main extends Application {
                 break;
             case ESCAPE:
                 display.displayGame(primaryStage, MAIN_MENU);
+                break;
             case S:
+                moved = true;
                 if (keyEvent.isControlDown()) {
                     Alert confirmSave = new Alert(Alert.AlertType.CONFIRMATION);
                     confirmSave.setHeaderText("Save Game");
@@ -190,10 +197,13 @@ public class Main extends Application {
                         gdm.getPlayerDao().update(model);
 
                         GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), model);
-                        gdm.getGameStateDaoJdbc().add(gameState);
+                        gdm.getGameStateDaoJdbc().update(gameState);
 
                     }
                 }
+                break;
+            default:
+                moved = true;
         }
         if (!moved) {
             display.updateInventory(inventory);

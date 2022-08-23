@@ -52,8 +52,22 @@ public class PlayerDaoJdbc implements PlayerDao, Serializable {
     }
 
     @Override
-    public PlayerModel get(int id) {
-        return null;
+    public int get(String name) {
+        try(Connection connection = dataSource.getConnection()) {
+            String SQL = "SELECT id " +
+                    "FROM player " +
+                    "WHERE player_name = ?";
+            PreparedStatement statement = connection.prepareStatement(SQL);
+            statement.setString(1, name);
+            ResultSet resultSet = statement.executeQuery();
+            int result = 0;
+            while (resultSet.next()) {
+                result = resultSet.getInt(1);
+            }
+            return result;
+        } catch (SQLException throwables) {
+            throw new RuntimeException(throwables);
+        }
     }
 
     @Override

@@ -90,6 +90,10 @@ public class Player extends Actor {
         }
     }
 
+    public void checkGear() {
+        Tiles.updatePlayerImage(playerState.getTileNumber());
+    }
+
     public String getName() {
         return name;
     }

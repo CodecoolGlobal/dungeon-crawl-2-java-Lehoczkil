@@ -33,7 +33,18 @@ public class GameStateDaoJdbc implements GameStateDao, Serializable {
 
     @Override
     public void update(GameState state) {
-
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "UPDATE game_state " +
+                    "SET current_map = ?, saved_at = ? " +
+                    "WHERE player_id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setBytes(1, state.getCurrentMap());
+            statement.setDate(2, state.getSavedAt());
+            statement.setInt(3, state.getPlayer().getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

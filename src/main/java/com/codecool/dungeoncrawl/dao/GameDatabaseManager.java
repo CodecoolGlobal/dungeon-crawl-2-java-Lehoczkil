@@ -12,16 +12,20 @@ public class GameDatabaseManager implements Serializable {
     private PlayerDaoJdbc playerDao;
     public ItemsManagerDaoJdbc itemsManagerDaoJdbc;
 
-    public GameStateDaoJdbc gameStateDaoJdbc;
+    private GameStateDaoJdbc gameStateDaoJdbc;
     public PlayerDaoJdbc getPlayerDao() {
         return playerDao;
+    }
+
+    public GameStateDaoJdbc getGameStateDaoJdbc() {
+        return gameStateDaoJdbc;
     }
 
     public void setup() throws SQLException {
         DataSource dataSource = connect();
         itemsManagerDaoJdbc = new ItemsManagerDaoJdbc(dataSource);
         playerDao = new PlayerDaoJdbc(dataSource);
-        gameStateDaoJdbc = new GameStateDaoJdbc();
+        gameStateDaoJdbc = new GameStateDaoJdbc(dataSource);
     }
 
     public void savePlayer(Player player) {

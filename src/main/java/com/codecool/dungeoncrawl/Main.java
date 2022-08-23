@@ -8,6 +8,7 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Coin;
+import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import com.vdurmont.emoji.EmojiParser;
 import javafx.application.Application;
@@ -20,11 +21,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
-import org.apache.commons.lang3.SerializationUtils;
+
 
 public class Main extends Application {
 
@@ -157,11 +158,8 @@ public class Main extends Application {
                         model.setId(player.getId());
                         gdm.getPlayerDao().update(model);
 
-                        byte[] gameState = SerializationUtils.serialize(map);
-
-                        GameMap clone = SerializationUtils.deserialize(gameState);
-                        String name = clone.getPlayer().getName();
-                        System.out.println(name);
+                        GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), model);
+                        gdm.getGameStateDaoJdbc().add(gameState);
 
                     }
                 }

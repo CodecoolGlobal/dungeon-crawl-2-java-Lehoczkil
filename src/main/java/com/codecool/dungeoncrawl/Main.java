@@ -8,12 +8,12 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Coin;
-import com.codecool.dungeoncrawl.model.PlayerModel;
 import com.vdurmont.emoji.EmojiParser;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
@@ -21,7 +21,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
+import java.util.List;
+import java.util.Optional;
 
 public class Main extends Application {
 
@@ -57,28 +58,42 @@ public class Main extends Application {
         newGame.setOnAction(ActionEvent -> {
             TextInputDialog td = new TextInputDialog("Enter Player name:");
             td.setHeaderText("Choose a name");
-            td.show();
-            String name = td.getEditor().getText();
-            System.out.println(name);
+            Optional<String> result = td.showAndWait();
 
+         /*   Optional<String> result = Optional.of("test") ;*/
 
-
-
-//            Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
-//            scene.setOnKeyPressed(this::onKeyPressed);
-//            display.displayGame(primaryStage, scene);
-//            canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
-//            canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
-//            initPlayer();
-//            display.setPlayer_id(player.getId());
-//            refresh();
+            result.ifPresent(res -> {
+                List<String> playerNames = gdm.getPlayerDao().getPlayerNames();
+                if (playerNames.contains(res)) {
+                    Alert takenNameAlert = new Alert(Alert.AlertType.ERROR);
+                    takenNameAlert.setHeaderText("Player name error");
+                    takenNameAlert.setContentText("Player name already taken");
+                    takenNameAlert.show();
+                } else {
+                    primaryStage.close();
+                    startGame();
+                }
+            });
         });
+
+
         Button exit = (Button) menu.lookup("#exitBtn");
         exit.setOnAction(ActionEvent -> primaryStage.close());
 
         this.MAIN_MENU = menu;
         display.displayGame(primaryStage, menu);
 
+    }
+
+    private void startGame() {
+        Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
+        scene.setOnKeyPressed(this::onKeyPressed);
+        display.displayGame(primaryStage, scene);
+        canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
+        canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
+        initPlayer();
+        display.setPlayer_id(player.getId());
+        refresh();
     }
 
     private void checkForEnemy(int dx, int dy) {

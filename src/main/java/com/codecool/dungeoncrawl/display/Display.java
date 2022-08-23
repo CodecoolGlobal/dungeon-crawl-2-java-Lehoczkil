@@ -172,6 +172,7 @@ public class Display {
         menuPane.setPrefWidth(primaryStage.getWidth());
         menuPane.setPrefHeight(primaryStage.getHeight());
         menuPane.setStyle("-fx-background-color: #999999");
+        menuPane.setId("container");
 
         for (String player: players) {
             Button btn = new Button();

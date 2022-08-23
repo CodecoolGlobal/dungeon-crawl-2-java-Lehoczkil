@@ -21,8 +21,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,9 +76,14 @@ public class Main extends Application {
             });
         });
 
-
         Button exit = (Button) menu.lookup("#exitBtn");
         exit.setOnAction(ActionEvent -> primaryStage.close());
+
+        Button loadGame = (Button) menu.lookup("#loadBtn");
+        loadGame.setOnAction(ActionEvent -> {
+            Scene loadMenu = display.createLoadMenu(primaryStage);
+            display.displayGame(primaryStage, loadMenu);
+        });
 
         this.MAIN_MENU = menu;
         display.displayGame(primaryStage, menu);

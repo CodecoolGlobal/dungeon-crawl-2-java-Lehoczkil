@@ -129,6 +129,8 @@ public class Main extends Application {
         canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
         this.map = map;
         this.player = player;
+        display.setPlayer_id(player.getId());
+        display.updateInventory(inventory);
         refresh();
     }
 

@@ -104,16 +104,23 @@ public class Main extends Application {
             Set<Node> playerBtns = buttons.lookupAll("#playerBtn");
             for (Node button: playerBtns) {
                 Button playerBtn = (Button) button;
-                playerBtn.setOnAction(ActionEvent2 -> {
-                    byte[] byteMap = gdm.getGameStateDaoJdbc().get(playerBtn.getText());
-                    int playerId = gdm.getPlayerDao().get(playerBtn.getText());
-                    GameMap gameMap = SerializationUtils.deserialize(byteMap);
-                    Player player = gameMap.getPlayer();
-                    player.setId(playerId);
-                    player.checkGear();
-                    loadGame(gameMap, player);
-                });
+                if (!playerBtn.getText().equals("BACK")) {
+                    playerBtn.setOnAction(ActionEvent2 -> {
+                        byte[] byteMap = gdm.getGameStateDaoJdbc().get(playerBtn.getText());
+                        int playerId = gdm.getPlayerDao().get(playerBtn.getText());
+                        GameMap gameMap = SerializationUtils.deserialize(byteMap);
+                        Player player = gameMap.getPlayer();
+                        player.setId(playerId);
+                        player.checkGear();
+                        loadGame(gameMap, player);
+                    });
+                }
             }
+
+            Button backBtn = (Button) loadMenu.lookup("#backBtn");
+            backBtn.setOnAction(ActionEvent2 -> {
+                display.displayGame(primaryStage, menu);
+            });
         });
 
         display.displayGame(primaryStage, menu);

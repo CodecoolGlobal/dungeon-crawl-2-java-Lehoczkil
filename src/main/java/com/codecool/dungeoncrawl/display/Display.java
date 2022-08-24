@@ -4,12 +4,10 @@ import com.codecool.dungeoncrawl.Tiles;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.util.HashMap;
@@ -125,6 +123,7 @@ public class Display {
         newGame.setText("NEW GAME");
         newGame.setStyle("-fx-font-size: 80");
         newGame.setTextFill(Color.CHOCOLATE);
+        newGame.setMaxWidth(1000.0);
         newGame.setId("gameBtn");
 
         Button exitGame = new Button();
@@ -132,6 +131,7 @@ public class Display {
         exitGame.setText("EXIT GAME");
         exitGame.setStyle("-fx-font-size: 80");
         exitGame.setTextFill(Color.CHOCOLATE);
+        exitGame.setMaxWidth(1000.0);
         exitGame.setId("exitBtn");
 
         Button loadGame = new Button();
@@ -139,6 +139,7 @@ public class Display {
         loadGame.setText("LOAD GAME");
         loadGame.setStyle("-fx-font-size: 80");
         loadGame.setTextFill(Color.CHOCOLATE);
+        loadGame.setMaxWidth(1000.0);
         loadGame.setId("loadBtn");
         if (players.isEmpty()) {
             loadGame.setDisable(true);
@@ -149,6 +150,7 @@ public class Display {
         importGame.setText("IMPORT GAME");
         importGame.setStyle("-fx-font-size: 80");
         importGame.setTextFill(Color.CHOCOLATE);
+        importGame.setMaxWidth(1000.0);
         importGame.setId("importBtn");
 
 
@@ -161,6 +163,7 @@ public class Display {
         menuPane.setPrefWidth(primaryStage.getWidth());
         menuPane.setPrefHeight(primaryStage.getHeight());
         menuPane.setStyle("-fx-background-color: #999999");
+        menuPane.setPrefWidth(1000.0);
 
         menuPane.setAlignment(Pos.CENTER);
 
@@ -217,11 +220,24 @@ public class Display {
             Button btn = new Button();
             btn.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
             btn.setText(player);
-            btn.setStyle("-fx-font-size: 80");
+            btn.setStyle("-fx-font-size: 40");
             btn.setTextFill(Color.CHOCOLATE);
+            btn.setMaxWidth(400.0);
+            btn.setMaxHeight(100.0);
             btn.setId("playerBtn");
             menuPane.getChildren().add(btn);
         }
+
+        Button backBtn = new Button();
+        backBtn.setBackground(new Background(new BackgroundFill(Color.CORNSILK, CornerRadii.EMPTY, null)));
+        backBtn.setText("BACK");
+        backBtn.setStyle("-fx-font-size: 40");
+        backBtn.setTextFill(Color.CHOCOLATE);
+        backBtn.setMaxWidth(400.0);
+        backBtn.setMaxHeight(100.0);
+        backBtn.setId("backBtn");
+
+        menuPane.getChildren().add(backBtn);
 
         menuPane.setAlignment(Pos.CENTER);
 

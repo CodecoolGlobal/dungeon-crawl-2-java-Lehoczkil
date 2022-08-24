@@ -1,8 +1,6 @@
 package com.codecool.dungeoncrawl.display;
 
 import com.codecool.dungeoncrawl.Tiles;
-import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
-import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,12 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Display {
-    private GameDatabaseManager gdm;
-    private int player_id;
-
-    public Display(GameDatabaseManager gdm) {
-        this.gdm = gdm;
-    }
 
     private GridPane generateUI(Label healthLabel, Label playerInventory) {
         int fontSize = 50;
@@ -87,7 +79,7 @@ public class Display {
         return new Scene(gameOver);
     }
 
-    public Scene createWinScene(Stage stage) {
+    public Scene createWinScene(Stage stage, int coins) {
         BorderPane winScene = new BorderPane();
         winScene.setMinWidth(stage.getWidth());
         winScene.setMinHeight(stage.getHeight());
@@ -95,7 +87,7 @@ public class Display {
         Label winSceneText = new Label("CONGRATS");
         winSceneText.setTextFill(Color.RED);
         winSceneText.setStyle("-fx-font-size: 80");
-        Label winSceneStats = new Label("Coins collected: " + gdm.itemsManagerDaoJdbc.getItems(player_id).get("coin"));
+        Label winSceneStats = new Label("Coins collected: " + coins);
         winSceneStats.setTextFill(Color.RED);
         winSceneStats.setStyle("-fx-font-size: 40");
         winScene.setCenter(winSceneText);
@@ -112,8 +104,7 @@ public class Display {
         Tiles.setTileWidth(primaryStage.getHeight()/10);
     }
 
-    public void updateInventory (Label inventory) {
-        HashMap<String, Integer> items = gdm.itemsManagerDaoJdbc.getItems(player_id);
+    public void updateInventory (Label inventory, HashMap<String, Integer> items) {
         StringBuilder sb = new StringBuilder();
         if (items.size() > 0) {
             for (String item: items.keySet()) {
@@ -127,8 +118,7 @@ public class Display {
         inventory.setText(sb.toString());
     }
 
-    public Scene createMenu (Stage primaryStage) {
-        List<String> players = gdm.getPlayerDao().getPlayerNames();
+    public Scene createMenu (Stage primaryStage, List<String> players) {
 
         Button newGame = new Button();
         newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
@@ -215,8 +205,7 @@ public class Display {
         return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
     }
 
-    public Scene createLoadMenu(Stage primaryStage) {
-        List<String> players = gdm.getPlayerDao().getPlayerNames();
+    public Scene createLoadMenu(Stage primaryStage, List<String> players) {
 
         VBox menuPane = new VBox(30);
         menuPane.setPrefWidth(primaryStage.getWidth());
@@ -237,10 +226,6 @@ public class Display {
         menuPane.setAlignment(Pos.CENTER);
 
         return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
-    }
-
-    public void setPlayer_id(int player_id) {
-        this.player_id = player_id;
     }
 
 }

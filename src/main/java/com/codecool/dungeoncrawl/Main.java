@@ -9,7 +9,6 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.logic.actors.PlayerState;
 import com.codecool.dungeoncrawl.logic.items.Coin;
 import com.codecool.dungeoncrawl.logic.items.HealPotion;
 import com.codecool.dungeoncrawl.logic.items.Item;
@@ -29,8 +28,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.SerializationUtils;
 
-import java.awt.event.ActionEvent;
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -38,7 +37,6 @@ import java.util.Set;
 
 public class Main extends Application {
 
-    private Scene MAIN_MENU;
     int currentMap = 1;
     GameMap map = MapLoader.loadMap("/map.txt", null);
     Canvas canvas = new Canvas(
@@ -64,8 +62,9 @@ public class Main extends Application {
         initGameState();
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
+        List<String> players = gdm.getPlayerDao().getPlayerNames();
 
-        Scene menu = display.createMenu(primaryStage);
+        Scene menu = display.createMenu(primaryStage, players);
         Button importGame = (Button) menu.lookup("#importBtn") ;
         importGame.setOnAction(ActionEvent -> {
             GameState gameState = new Import(primaryStage).importGame();
@@ -99,7 +98,7 @@ public class Main extends Application {
 
         Button loadGame = (Button) menu.lookup("#loadBtn");
         loadGame.setOnAction(ActionEvent -> {
-            Scene loadMenu = display.createLoadMenu(primaryStage);
+            Scene loadMenu = display.createLoadMenu(primaryStage, players);
             display.displayGame(primaryStage, loadMenu);
             Pane buttons = (Pane) loadMenu.lookup("#container");
             Set<Node> playerBtns = buttons.lookupAll("#playerBtn");
@@ -117,7 +116,6 @@ public class Main extends Application {
             }
         });
 
-        this.MAIN_MENU = menu;
         display.displayGame(primaryStage, menu);
 
     }
@@ -132,7 +130,6 @@ public class Main extends Application {
         PlayerModel model = new PlayerModel(player);
         model.setId(player.getId());
         gdm.getGameStateDaoJdbc().add(new GameState(map, new Date(System.currentTimeMillis()), model));
-        display.setPlayer_id(player.getId());
         refresh();
     }
 
@@ -144,8 +141,8 @@ public class Main extends Application {
         canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
         this.map = map;
         this.player = player;
-        display.setPlayer_id(player.getId());
-        display.updateInventory(inventory);
+        HashMap<String, Integer> playerItems = gdm.itemsManagerDaoJdbc.getItems(player.getId());
+        display.updateInventory(inventory, playerItems);
         refresh();
     }
 
@@ -225,7 +222,8 @@ public class Main extends Application {
                     player.setHasKey(false);
                 }
             }
-            display.updateInventory(inventory);
+            HashMap<String, Integer> playerItems = gdm.itemsManagerDaoJdbc.getItems(player.getId());
+            display.updateInventory(inventory, playerItems);
             refresh();
         }
     }
@@ -285,7 +283,8 @@ public class Main extends Application {
                 }
             }
             if (!isBossAlive) {
-                Scene winningScene = display.createWinScene(primaryStage);
+                int coins = gdm.itemsManagerDaoJdbc.getItems(player.getId()).get("coin");
+                Scene winningScene = display.createWinScene(primaryStage, coins);
                 winningScene.setOnKeyPressed(KeyEvent -> {
                     if (KeyEvent.getCode() == KeyCode.ESCAPE) {
                         primaryStage.close();
@@ -341,7 +340,7 @@ public class Main extends Application {
     private void initGameState() {
         this.gdm = new GameDatabaseManager();
         this.gdm.run();
-        display = new Display(gdm);
+        display = new Display();
     }
 
     private void initPlayer(String name) {

@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.display;
 
 import com.codecool.dungeoncrawl.Tiles;
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,7 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.util.HashMap;
-import java.util.Optional;
+import java.util.List;
 
 public class Display {
     private GameDatabaseManager gdm;
@@ -127,6 +128,7 @@ public class Display {
     }
 
     public Scene createMenu (Stage primaryStage) {
+        List<String> players = gdm.getPlayerDao().getPlayerNames();
 
         Button newGame = new Button();
         newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
@@ -142,15 +144,49 @@ public class Display {
         exitGame.setTextFill(Color.CHOCOLATE);
         exitGame.setId("exitBtn");
 
+        Button loadGame = new Button();
+        loadGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+        loadGame.setText("LOAD GAME");
+        loadGame.setStyle("-fx-font-size: 80");
+        loadGame.setTextFill(Color.CHOCOLATE);
+        loadGame.setId("loadBtn");
+        if (players.isEmpty()) {
+            loadGame.setDisable(true);
+        }
+
         Label logo = new Label("Rolling Winter Wombats Ltd");
         logo.setTextFill(Color.CORNSILK);
         logo.setStyle("-fx-font-size: 60");
         logo.setPadding(new Insets(50, 0, 0, 0));
 
-        VBox menuPane = new VBox(30, newGame, exitGame, logo);
+        VBox menuPane = new VBox(30, newGame, loadGame, exitGame, logo);
         menuPane.setPrefWidth(primaryStage.getWidth());
         menuPane.setPrefHeight(primaryStage.getHeight());
         menuPane.setStyle("-fx-background-color: #999999");
+
+        menuPane.setAlignment(Pos.CENTER);
+
+        return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
+    }
+
+    public Scene createLoadMenu(Stage primaryStage) {
+        List<String> players = gdm.getPlayerDao().getPlayerNames();
+
+        VBox menuPane = new VBox(30);
+        menuPane.setPrefWidth(primaryStage.getWidth());
+        menuPane.setPrefHeight(primaryStage.getHeight());
+        menuPane.setStyle("-fx-background-color: #999999");
+        menuPane.setId("container");
+
+        for (String player: players) {
+            Button btn = new Button();
+            btn.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+            btn.setText(player);
+            btn.setStyle("-fx-font-size: 80");
+            btn.setTextFill(Color.CHOCOLATE);
+            btn.setId("playerBtn");
+            menuPane.getChildren().add(btn);
+        }
 
         menuPane.setAlignment(Pos.CENTER);
 

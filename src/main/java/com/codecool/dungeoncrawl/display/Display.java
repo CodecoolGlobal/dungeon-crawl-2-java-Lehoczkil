@@ -2,7 +2,6 @@ package com.codecool.dungeoncrawl.display;
 
 import com.codecool.dungeoncrawl.Tiles;
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
-import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -130,42 +129,17 @@ public class Display {
     public Scene createMenu (Stage primaryStage) {
         List<String> players = gdm.getPlayerDao().getPlayerNames();
 
-        Button newGame = new Button();
-        newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        newGame.setText("NEW GAME");
-        newGame.setStyle("-fx-font-size: 80");
-        newGame.setTextFill(Color.CHOCOLATE);
-        newGame.setId("gameBtn");
+        Button newGame = createBtn("NEW GAME", "gameBtn");
+        Button exitGame = createBtn("EXIT GAME", "exitBtn");
+        Button loadGame = createBtn("LOAD GAME", "loadBtn");
 
-        Button exitGame = new Button();
-        exitGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        exitGame.setText("EXIT GAME");
-        exitGame.setStyle("-fx-font-size: 80");
-        exitGame.setTextFill(Color.CHOCOLATE);
-        exitGame.setId("exitBtn");
-
-        Button loadGame = new Button();
-        loadGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        loadGame.setText("LOAD GAME");
-        loadGame.setStyle("-fx-font-size: 80");
-        loadGame.setTextFill(Color.CHOCOLATE);
-        loadGame.setId("loadBtn");
         if (players.isEmpty()) {
             loadGame.setDisable(true);
         }
 
-        Button importGame = new Button();
-        importGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        importGame.setText("IMPORT GAME");
-        importGame.setStyle("-fx-font-size: 80");
-        importGame.setTextFill(Color.CHOCOLATE);
-        importGame.setId("importBtn");
+        Button importGame = createBtn("IMPORT GAME", "importBtn");
 
-
-        Label logo = new Label("Rolling Winter Wombat Ltd");
-        logo.setTextFill(Color.CORNSILK);
-        logo.setStyle("-fx-font-size: 60");
-        logo.setPadding(new Insets(50, 0, 0, 0));
+        Label logo = createLogo();
 
         VBox menuPane = new VBox(30, newGame, importGame, loadGame, exitGame, logo);
         menuPane.setPrefWidth(primaryStage.getWidth());
@@ -177,33 +151,32 @@ public class Display {
         return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
     }
 
-    public Scene createInGameMenu (Stage primaryStage) {
-
-        Button continueButton = new Button();
-        continueButton.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        continueButton.setText("CONTINUE");
-        continueButton.setStyle("-fx-font-size: 80");
-        continueButton.setTextFill(Color.CHOCOLATE);
-        continueButton.setId("continueBtn");
-
-        Button exitGame = new Button();
-        exitGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        exitGame.setText("EXIT GAME");
-        exitGame.setStyle("-fx-font-size: 80");
-        exitGame.setTextFill(Color.CHOCOLATE);
-        exitGame.setId("exitBtn");
-
-        Button exportButton = new Button();
-        exportButton.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        exportButton.setText("EXPORT");
-        exportButton.setStyle("-fx-font-size: 80");
-        exportButton.setTextFill(Color.CHOCOLATE);
-        exportButton.setId("exportBtn");
-
+    private Label createLogo() {
         Label logo = new Label("Rolling Winter Wombat Ltd");
         logo.setTextFill(Color.CORNSILK);
         logo.setStyle("-fx-font-size: 60");
         logo.setPadding(new Insets(50, 0, 0, 0));
+        return logo;
+    }
+
+    private Button createBtn(String content, String id) {
+        Button button = new Button();
+        button.setPrefWidth(1000);
+        button.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+        button.setText(content);
+        button.setStyle("-fx-font-size: 80");
+        button.setTextFill(Color.CHOCOLATE);
+        button.setId(id);
+        return button;
+    }
+
+    public Scene createInGameMenu (Stage primaryStage) {
+
+        Button continueButton = createBtn("CONTINUE GAME", "continueBtn");
+        Button exitGame = createBtn("EXIT GAME", "exitBtn");
+        Button exportButton = createBtn("EXPORT GAME", "exportBtn");
+
+        Label logo = createLogo();
 
         VBox menuPane = new VBox(30, continueButton, exportButton, exitGame, logo);
         menuPane.setPrefWidth(primaryStage.getWidth());
@@ -225,12 +198,7 @@ public class Display {
         menuPane.setId("container");
 
         for (String player: players) {
-            Button btn = new Button();
-            btn.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-            btn.setText(player);
-            btn.setStyle("-fx-font-size: 80");
-            btn.setTextFill(Color.CHOCOLATE);
-            btn.setId("playerBtn");
+            Button btn = createBtn(player, "playerBtn");
             menuPane.getChildren().add(btn);
         }
 

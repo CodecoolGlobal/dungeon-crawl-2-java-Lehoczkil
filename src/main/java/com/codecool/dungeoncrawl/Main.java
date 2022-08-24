@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.data_transport.Export;
+import com.codecool.dungeoncrawl.data_transport.Import;
 import com.codecool.dungeoncrawl.display.Display;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
@@ -25,6 +26,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.SerializationUtils;
 
+import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +63,15 @@ public class Main extends Application {
         primaryStage.setFullScreen(true);
 
         Scene menu = display.createMenu(primaryStage);
+        Button importGame = (Button) menu.lookup("#importBtn") ;
+        importGame.setOnAction(ActionEvent -> {
+            GameState gameState = new Import(primaryStage).importGame();
+            GameMap gameMapToLoad = gameState.deSerialize(gameState.getCurrentMap());
+            Player playerToLoad = gameMapToLoad.getPlayer();
+            playerToLoad.checkGear();
+            primaryStage.close();
+            loadGame(gameMapToLoad, playerToLoad);
+        });
         Button newGame = (Button) menu.lookup("#gameBtn");
         newGame.setOnAction(ActionEvent -> {
             TextInputDialog td = new TextInputDialog("Enter Player name:");
@@ -237,7 +248,7 @@ public class Main extends Application {
             playerModel.setId(player.getId());
             GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), playerModel);
             Export export = new Export(gameState, primaryStage);
-            export.export();
+            export.exportGame();
         });
 
         Button exitBtn = (Button) menu.lookup("#exitBtn");

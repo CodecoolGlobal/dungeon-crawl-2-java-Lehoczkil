@@ -25,8 +25,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.SerializationUtils;
-
-import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +32,6 @@ import java.util.Set;
 
 
 public class Main extends Application {
-
-    private Scene MAIN_MENU;
     int currentMap = 1;
     GameMap map = MapLoader.loadMap("/map.txt", null);
     Canvas canvas = new Canvas(
@@ -56,6 +52,52 @@ public class Main extends Application {
         launch(args);
     }
 
+    private void importAction() {
+        GameState gameState = new Import(primaryStage).importGame();
+        GameMap gameMapToLoad = gameState.deSerialize(gameState.getCurrentMap());
+        Player playerToLoad = gameMapToLoad.getPlayer();
+        playerToLoad.checkGear();
+        primaryStage.close();
+        loadGame(gameMapToLoad, playerToLoad);
+    }
+
+    private void newGameAction() {
+        TextInputDialog td = new TextInputDialog("Enter Player name:");
+        td.setHeaderText("Choose a name");
+        Optional<String> inputName = td.showAndWait();
+        inputName.ifPresent(res -> {
+            List<String> playerNames = gdm.getPlayerDao().getPlayerNames();
+            if (playerNames.contains(res)) {
+                Alert takenNameAlert = new Alert(Alert.AlertType.ERROR);
+                takenNameAlert.setHeaderText("Player name error");
+                takenNameAlert.setContentText("Player name already taken");
+                takenNameAlert.show();
+            } else {
+                primaryStage.close();
+                startGame(inputName.get());
+            }
+        });
+    }
+
+    private void loadGameAction() {
+        Scene loadMenu = display.createLoadMenu(primaryStage);
+        display.displayGame(primaryStage, loadMenu);
+        Pane buttons = (Pane) loadMenu.lookup("#container");
+        Set<Node> playerButtons = buttons.lookupAll("#playerBtn");
+        for (Node button: playerButtons) {
+            Button playerBtn = (Button) button;
+            playerBtn.setOnAction(ActionEvent2 -> {
+                byte[] byteMap = gdm.getGameStateDaoJdbc().get(playerBtn.getText()).get(0);
+                int playerId = gdm.getPlayerDao().get(playerBtn.getText());
+                GameMap gameMap = SerializationUtils.deserialize(byteMap);
+                Player player = gameMap.getPlayer();
+                player.setId(playerId);
+                player.checkGear();
+                loadGame(gameMap, player);
+            });
+        }
+    }
+
     @Override
     public void start(Stage primaryStage) {
         initGameState();
@@ -64,67 +106,31 @@ public class Main extends Application {
 
         Scene menu = display.createMenu(primaryStage);
         Button importGame = (Button) menu.lookup("#importBtn") ;
-        importGame.setOnAction(ActionEvent -> {
-            GameState gameState = new Import(primaryStage).importGame();
-            GameMap gameMapToLoad = gameState.deSerialize(gameState.getCurrentMap());
-            Player playerToLoad = gameMapToLoad.getPlayer();
-            playerToLoad.checkGear();
-            primaryStage.close();
-            loadGame(gameMapToLoad, playerToLoad);
-        });
+        importGame.setOnAction(ActionEvent -> importAction());
+
         Button newGame = (Button) menu.lookup("#gameBtn");
-        newGame.setOnAction(ActionEvent -> {
-            TextInputDialog td = new TextInputDialog("Enter Player name:");
-            td.setHeaderText("Choose a name");
-            Optional<String> inputName = td.showAndWait();
-            inputName.ifPresent(res -> {
-                List<String> playerNames = gdm.getPlayerDao().getPlayerNames();
-                if (playerNames.contains(res)) {
-                    Alert takenNameAlert = new Alert(Alert.AlertType.ERROR);
-                    takenNameAlert.setHeaderText("Player name error");
-                    takenNameAlert.setContentText("Player name already taken");
-                    takenNameAlert.show();
-                } else {
-                    primaryStage.close();
-                    startGame(inputName.get());
-                }
-            });
-        });
+        newGame.setOnAction(ActionEvent -> newGameAction());
 
         Button exit = (Button) menu.lookup("#exitBtn");
         exit.setOnAction(ActionEvent -> primaryStage.close());
 
         Button loadGame = (Button) menu.lookup("#loadBtn");
-        loadGame.setOnAction(ActionEvent -> {
-            Scene loadMenu = display.createLoadMenu(primaryStage);
-            display.displayGame(primaryStage, loadMenu);
-            Pane buttons = (Pane) loadMenu.lookup("#container");
-            Set<Node> playerBtns = buttons.lookupAll("#playerBtn");
-            for (Node button: playerBtns) {
-                Button playerBtn = (Button) button;
-                playerBtn.setOnAction(ActionEvent2 -> {
-                    byte[] byteMap = gdm.getGameStateDaoJdbc().get(playerBtn.getText()).get(0);
-                    int playerId = gdm.getPlayerDao().get(playerBtn.getText());
-                    GameMap gameMap = SerializationUtils.deserialize(byteMap);
-                    Player player = gameMap.getPlayer();
-                    player.setId(playerId);
-                    player.checkGear();
-                    loadGame(gameMap, player);
-                });
-            }
-        });
+        loadGame.setOnAction(ActionEvent -> loadGameAction());
 
-        this.MAIN_MENU = menu;
         display.displayGame(primaryStage, menu);
 
     }
 
-    private void startGame(String name) {
+    private void setGameScene() {
         Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
         scene.setOnKeyPressed(this::onKeyPressed);
         display.displayGame(primaryStage, scene);
         canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
         canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
+    }
+
+    private void startGame(String name) {
+        setGameScene();
         initPlayer(name);
         PlayerModel model = new PlayerModel(player);
         model.setId(player.getId());
@@ -134,11 +140,7 @@ public class Main extends Application {
     }
 
     private void loadGame(GameMap map, Player player) {
-        Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
-        scene.setOnKeyPressed(this::onKeyPressed);
-        display.displayGame(primaryStage, scene);
-        canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
-        canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
+        setGameScene();
         this.map = map;
         this.player = player;
         display.setPlayer_id(player.getId());
@@ -147,18 +149,36 @@ public class Main extends Application {
     }
 
     private void checkForEnemy(int dx, int dy) {
+        String nextToPlayer = player.getCell().getNeighbor(dx, dy).getActor().getTileName();
         if (player.getCell().getNeighbor(dx, dy).getActor() != null &&
-           (player.getCell().getNeighbor(dx, dy).getActor().getTileName().equals("skeleton") ||
-            player.getCell().getNeighbor(dx, dy).getActor().getTileName().equals("ghost") ||
-            player.getCell().getNeighbor(dx, dy).getActor().getTileName().equals("boss"))) {
+           (nextToPlayer.equals("skeleton") ||
+            nextToPlayer.equals("ghost") ||
+            nextToPlayer.equals("boss"))) {
                 Enemy enemy = (Enemy) player.getCell().getNeighbor(dx, dy).getActor();
                 player.attack(enemy);
                 if (!enemy.isAlive()) {
                     player.getCell().getNeighbor(dx, dy).setActor(null);
-                    if (enemy.getTileName() == "skeleton") {
+                    if (enemy.getTileName().equals("skeleton")) {
                         player.getCell().getNeighbor(dx, dy).setItem(new Coin(enemy.getCell()));
                     }
                 }
+        }
+    }
+
+    private void checkForAllEnemies() {
+        checkForEnemy(0, -1);
+        checkForEnemy(0,1);
+        checkForEnemy(-1,0);
+        checkForEnemy(1,0);
+    }
+
+    private void alertAction() {
+        Alert confirmSave = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmSave.setHeaderText("Save Game");
+        confirmSave.setContentText("Do you want to save the game?");
+        Optional<ButtonType> input = confirmSave.showAndWait();
+        if (input.isPresent() && input.get().getText().equals("OK")) {
+            saveGame();
         }
     }
 
@@ -190,10 +210,7 @@ public class Main extends Application {
                 refresh();
                 break;
             case SPACE:
-                checkForEnemy(0, -1);
-                checkForEnemy(0,1);
-                checkForEnemy(-1,0);
-                checkForEnemy(1,0);
+                checkForAllEnemies();
                 break;
             case ESCAPE:
                 moved = true;
@@ -202,13 +219,7 @@ public class Main extends Application {
             case S:
                 moved = true;
                 if (keyEvent.isControlDown()) {
-                    Alert confirmSave = new Alert(Alert.AlertType.CONFIRMATION);
-                    confirmSave.setHeaderText("Save Game");
-                    confirmSave.setContentText("Do you want to save the game?");
-                    Optional<ButtonType> input = confirmSave.showAndWait();
-                    if (input.get().getText().equals("OK")) {
-                        saveGame();
-                    }
+                    alertAction();
                 }
                 break;
             default:
@@ -229,32 +240,26 @@ public class Main extends Application {
         gdm.getGameStateDaoJdbc().update(gameState);
     }
 
+    private void exportAction() {
+        saveGame();
+        PlayerModel playerModel = new PlayerModel(player);
+        playerModel.setId(player.getId());
+        GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), playerModel);
+        Export export = new Export(gameState, primaryStage);
+        export.exportGame();
+    }
+
     private void loadInGameMenu() {
         Scene menu = display.createInGameMenu(primaryStage);
 
         Button continueBtn = (Button) menu.lookup("#continueBtn");
-        continueBtn.setOnAction(ActionEvent -> {
-            Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
-            scene.setOnKeyPressed(this::onKeyPressed);
-            display.displayGame(primaryStage, scene);
-            canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
-            canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
-        });
+        continueBtn.setOnAction(ActionEvent -> setGameScene());
 
         Button exportBtn = (Button) menu.lookup("#exportBtn");
-        exportBtn.setOnAction(ActionItem -> {
-            saveGame();
-            PlayerModel playerModel = new PlayerModel(player);
-            playerModel.setId(player.getId());
-            GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), playerModel);
-            Export export = new Export(gameState, primaryStage);
-            export.exportGame();
-        });
+        exportBtn.setOnAction(ActionItem -> exportAction());
 
         Button exitBtn = (Button) menu.lookup("#exitBtn");
-        exitBtn.setOnAction(ActionEvent -> {
-            primaryStage.close();
-        });
+        exitBtn.setOnAction(ActionEvent -> primaryStage.close());
 
         display.displayGame(primaryStage, menu);
     }
@@ -266,11 +271,11 @@ public class Main extends Application {
         }
     }
 
-    private void refresh() {
+    private void handleWin() {
         if (currentMap == 3) {
             boolean isBossAlive = false;
             for (Enemy enemy: map.getEnemies()) {
-                if (enemy.getTileName() == "boss") {
+                if (enemy.getTileName().equals("boss")) {
                     isBossAlive = true;
                 }
             }
@@ -284,44 +289,56 @@ public class Main extends Application {
                 display.displayGame(primaryStage, winningScene);
             }
         }
+    }
+
+    private void handleLose() {
+        Scene endGame = display.createEndGameScene(primaryStage);
+        endGame.setOnKeyPressed(KeyEvent -> {
+            if (KeyEvent.getCode() == KeyCode.ESCAPE) {
+                primaryStage.close();
+            }
+        });
+        display.displayGame(primaryStage, endGame);
+    }
+
+    private void refreshGameScene() {
+        context.setFill(Color.color(0.28, 0.18, 0.24));
+        context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        int playerX = player.getCell().getX();
+        int playerY = player.getCell().getY();
+        double canvasX = canvas.getWidth() / 2 - Tiles.TILE_WIDTH / 2;
+        double canvasY = canvas.getHeight() / 2 - Tiles.TILE_WIDTH / 2;
+        for (int x = -displayRange; x <= displayRange; x++) {
+            for (int y = -displayRange; y <= displayRange; y++) {
+                if (playerX + x >= 0 && playerX + x < map.getWidth()
+                        && playerY + y >= 0 && playerY + y < map.getHeight()) {
+                    Cell cell = map.getCell(playerX + x, playerY + y);
+                    if (cell.getActor() != null) {
+                        Tiles.drawTile(context, cell.getActor(), canvasX + (x * Tiles.TILE_WIDTH),
+                                canvasY + (y * Tiles.TILE_WIDTH));
+                    } else if (cell.getItem() != null) {
+                        Tiles.drawTile(context, cell.getItem(), canvasX + (x * Tiles.TILE_WIDTH),
+                                canvasY + (y * Tiles.TILE_WIDTH));
+                    } else {
+                        Tiles.drawTile(context, cell, canvasX + (x * Tiles.TILE_WIDTH),
+                                canvasY + (y * Tiles.TILE_WIDTH));
+                    }
+                }
+            }
+        }
+    }
+
+    private void refresh() {
+        handleWin();
         moveEnemies();
         if (!map.getPlayer().isAlive()) {
-            Scene endGame = display.createEndGameScene(primaryStage);
-            endGame.setOnKeyPressed(KeyEvent -> {
-                if (KeyEvent.getCode() == KeyCode.ESCAPE) {
-                    primaryStage.close();
-                }
-            });
-            display.displayGame(primaryStage, endGame);
+            handleLose();
         } else if (map.isLevelOver() && currentMap < 3) {
             map = MapLoader.loadNextLevel(currentMap, player);
             refresh();
             currentMap++;
         } else {
-            context.setFill(Color.color(0.28, 0.18, 0.24));
-            context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            int playerX = player.getCell().getX();
-            int playerY = player.getCell().getY();
-            double canvasX = canvas.getWidth() / 2 - Tiles.TILE_WIDTH / 2;
-            double canvasY = canvas.getHeight() / 2 - Tiles.TILE_WIDTH / 2;
-            for (int x = -displayRange; x <= displayRange; x++) {
-                for (int y = -displayRange; y <= displayRange; y++) {
-                    if (playerX + x >= 0 && playerX + x < map.getWidth()
-                        && playerY + y >= 0 && playerY + y < map.getHeight()) {
-                        Cell cell = map.getCell(playerX + x, playerY + y);
-                        if (cell.getActor() != null) {
-                            Tiles.drawTile(context, cell.getActor(), canvasX + (x * Tiles.TILE_WIDTH),
-                                    canvasY + (y * Tiles.TILE_WIDTH));
-                        } else if (cell.getItem() != null) {
-                            Tiles.drawTile(context, cell.getItem(), canvasX + (x * Tiles.TILE_WIDTH),
-                                    canvasY + (y * Tiles.TILE_WIDTH));
-                        } else {
-                            Tiles.drawTile(context, cell, canvasX + (x * Tiles.TILE_WIDTH),
-                                    canvasY + (y * Tiles.TILE_WIDTH));
-                        }
-                    }
-                }
-            }
+            refreshGameScene();
         }
         if (map.getPlayer().getHealth() > 0) {
             healthLabel.setText(EmojiParser.parseToUnicode(":heart:").repeat(map.getPlayer().getHealth()));

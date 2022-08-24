@@ -9,7 +9,10 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.actors.PlayerState;
 import com.codecool.dungeoncrawl.logic.items.Coin;
+import com.codecool.dungeoncrawl.logic.items.HealPotion;
+import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import com.vdurmont.emoji.EmojiParser;
@@ -184,7 +187,7 @@ public class Main extends Application {
                 break;
             case F:
                 if (player.isOnItem()) {
-                    player.pickUp(player.getCell().getItem());
+                    pickUp(player.getCell().getItem());
                     player.getCell().setItem(null);
                 }
                 refresh();
@@ -215,6 +218,13 @@ public class Main extends Application {
                 moved = true;
         }
         if (!moved) {
+            if (player.hasUsedKey()) {
+                player.setUsedKey(false);
+                gdm.itemsManagerDaoJdbc.decrementItem("key", player.getId());
+                if (!gdm.itemsManagerDaoJdbc.hasItem("key", player.getId())) {
+                    player.setHasKey(false);
+                }
+            }
             display.updateInventory(inventory);
             refresh();
         }
@@ -336,9 +346,26 @@ public class Main extends Application {
 
     private void initPlayer(String name) {
         player = map.getPlayer();
-        player.setGdm(gdm);
         player.setName(name);
         gdm.savePlayer(player);
+    }
+
+    private void pickUp(Item item) {
+        if (item.getTileName().equals("heal")){
+            HealPotion hp = (HealPotion) item;
+            player.increaseHealth(hp.getHealingPower());
+        } else if (!item.getTileName().equals("heal")){
+            gdm.itemsManagerDaoJdbc.addItem(item.getTileName(), player.getId());
+        }
+        if (item.getTileName().equals("sword")) {
+            player.setHasSword(true);
+        } else if (item.getTileName().equals("armor")) {
+            player.setHasArmor(true);
+        } else if (item.getTileName().equals("key")) {
+            gdm.itemsManagerDaoJdbc.hasItem("key", player.getId());
+            player.setHasKey(true);
+        }
+        player.checkGear();
     }
 
 }

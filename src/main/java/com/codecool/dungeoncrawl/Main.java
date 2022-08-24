@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
+import com.codecool.dungeoncrawl.data_transport.Export;
 import com.codecool.dungeoncrawl.display.Display;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
@@ -184,7 +185,8 @@ public class Main extends Application {
                 checkForEnemy(1,0);
                 break;
             case ESCAPE:
-                display.displayGame(primaryStage, MAIN_MENU);
+                moved = true;
+                loadInGameMenu();
                 break;
             case S:
                 moved = true;
@@ -194,13 +196,7 @@ public class Main extends Application {
                     confirmSave.setContentText("Do you want to save the game?");
                     Optional<ButtonType> input = confirmSave.showAndWait();
                     if (input.get().getText().equals("OK")) {
-                        PlayerModel model = new PlayerModel(player);
-                        model.setId(player.getId());
-                        gdm.getPlayerDao().update(model);
-
-                        GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), model);
-                        gdm.getGameStateDaoJdbc().update(gameState);
-
+                        saveGame();
                     }
                 }
                 break;
@@ -211,6 +207,45 @@ public class Main extends Application {
             display.updateInventory(inventory);
             refresh();
         }
+    }
+
+    private void saveGame() {
+        PlayerModel model = new PlayerModel(player);
+        model.setId(player.getId());
+        gdm.getPlayerDao().update(model);
+
+        GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), model);
+        gdm.getGameStateDaoJdbc().update(gameState);
+    }
+
+    private void loadInGameMenu() {
+        Scene menu = display.createInGameMenu(primaryStage);
+
+        Button continueBtn = (Button) menu.lookup("#continueBtn");
+        continueBtn.setOnAction(ActionEvent -> {
+            Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
+            scene.setOnKeyPressed(this::onKeyPressed);
+            display.displayGame(primaryStage, scene);
+            canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
+            canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
+        });
+
+        Button exportBtn = (Button) menu.lookup("#exportBtn");
+        exportBtn.setOnAction(ActionItem -> {
+            saveGame();
+            PlayerModel playerModel = new PlayerModel(player);
+            playerModel.setId(player.getId());
+            GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), playerModel);
+            Export export = new Export(gameState);
+            export.export();
+        });
+
+        Button exitBtn = (Button) menu.lookup("#exitBtn");
+        exitBtn.setOnAction(ActionEvent -> {
+            primaryStage.close();
+        });
+
+        display.displayGame(primaryStage, menu);
     }
 
     private void moveEnemies() {

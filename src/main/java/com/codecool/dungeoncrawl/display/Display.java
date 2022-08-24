@@ -154,12 +154,20 @@ public class Display {
             loadGame.setDisable(true);
         }
 
+        Button importGame = new Button();
+        importGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+        importGame.setText("IMPORT GAME");
+        importGame.setStyle("-fx-font-size: 80");
+        importGame.setTextFill(Color.CHOCOLATE);
+        importGame.setId("importBtn");
+
+
         Label logo = new Label("Rolling Winter Wombat Ltd");
         logo.setTextFill(Color.CORNSILK);
         logo.setStyle("-fx-font-size: 60");
         logo.setPadding(new Insets(50, 0, 0, 0));
 
-        VBox menuPane = new VBox(30, newGame, loadGame, exitGame, logo);
+        VBox menuPane = new VBox(30, newGame, importGame, loadGame, exitGame, logo);
         menuPane.setPrefWidth(primaryStage.getWidth());
         menuPane.setPrefHeight(primaryStage.getHeight());
         menuPane.setStyle("-fx-background-color: #999999");

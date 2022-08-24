@@ -15,9 +15,11 @@ public class Player extends Actor {
 
     private boolean hasSword = false;
     private boolean hasArmor = false;
-    private PlayerState playerState = PlayerState.NAKED;
 
-    private GameDatabaseManager gdm;
+    private boolean hasKey = false;
+
+    private boolean usedKey = false;
+    private PlayerState playerState = PlayerState.NAKED;
 
 
     public Player(Cell cell) {
@@ -30,29 +32,7 @@ public class Player extends Actor {
     }
 
     public boolean isOnItem() {
-        return cell.getItem() != null && cell.getItem().getTileName() != "open door";
-    }
-
-    public void pickUp(Item item) {
-        if (item.getTileName().equals("heal") && health <= MAX_HEALTH){
-            health += 3;
-            health = Math.min(health, MAX_HEALTH);
-        } else if (!item.getTileName().equals("heal")){
-            gdm.itemsManagerDaoJdbc.addItem(item.getTileName(), id);
-        }
-        if (item.getTileName().equals("sword")) {
-            hasSword = true;
-            playerState = PlayerState.ARMED;
-        } else if (item.getTileName().equals("armor")) {
-            hasArmor = true;
-            if (!hasSword) {
-                playerState = PlayerState.ARMORED;
-            }
-        }
-        if (hasSword && hasArmor) {
-            playerState = PlayerState.FULL;
-        }
-        Tiles.updatePlayerImage(playerState.getTileNumber());
+        return cell.getItem() != null && !cell.getItem().getTileName().equals("open door");
     }
 
     @Override
@@ -71,9 +51,9 @@ public class Player extends Actor {
             cell.setActor(null);
             nextCell.setActor(this);
             cell = nextCell;
-        } else if (nextCell.getItem() != null && nextCell.getItem().getTileName() == "closed door" && gdm.itemsManagerDaoJdbc.hasItem("key", id)) {
+        } else if (nextCell.getItem() != null && nextCell.getItem().getTileName() == "closed door" && hasKey) {
             ((Door) nextCell.getItem()).setOpen();
-            gdm.itemsManagerDaoJdbc.decrementItem("key", id);
+            usedKey = true;
             return false;
         }
         return true;
@@ -91,11 +71,24 @@ public class Player extends Actor {
     }
 
     public void checkGear() {
+        if (hasArmor && hasSword) {
+            playerState = PlayerState.FULL;
+        } else if (hasArmor && !hasSword) {
+            playerState = PlayerState.ARMORED;
+        } else if (!hasArmor && hasSword) {
+            playerState = PlayerState.ARMED;
+        } else {
+            playerState = PlayerState.NAKED;
+        }
         Tiles.updatePlayerImage(playerState.getTileNumber());
     }
 
     public String getName() {
         return name;
+    }
+
+    public void increaseHealth(int amount) {
+        this.health = Math.min(health + amount, MAX_HEALTH);
     }
 
     public void setName(String name) {
@@ -106,15 +99,31 @@ public class Player extends Actor {
         this.cell = cell;
     }
 
-    public void setGdm(GameDatabaseManager gdm) {
-        this.gdm = gdm;
-    }
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setHasSword(boolean hasSword) {
+        this.hasSword = hasSword;
+    }
+
+    public void setHasArmor(boolean hasArmor) {
+        this.hasArmor = hasArmor;
+    }
+
+    public void setHasKey(boolean hasKey) {
+        this.hasKey = hasKey;
+    }
+
+    public boolean hasUsedKey() {
+        return usedKey;
+    }
+
+    public void setUsedKey(boolean usedKey) {
+        this.usedKey = usedKey;
     }
 }

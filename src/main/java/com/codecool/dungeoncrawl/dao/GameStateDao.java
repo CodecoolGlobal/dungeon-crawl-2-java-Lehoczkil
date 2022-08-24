@@ -7,6 +7,6 @@ import java.util.List;
 public interface GameStateDao {
     void add(GameState state);
     void update(GameState state);
-    List<byte[]> get(String playerName);
+    byte[] get(String playerName);
     List<GameState> getAll();
 }

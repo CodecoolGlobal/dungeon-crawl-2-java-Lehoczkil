@@ -209,6 +209,7 @@ public class Display {
             Button btn = createBtn(player, "playerBtn");
             btn.setMaxWidth(400.0);
             btn.setMaxHeight(100.0);
+            btn.setStyle("-fx-font-size: 40");
             menuPane.getChildren().add(btn);
         }
 

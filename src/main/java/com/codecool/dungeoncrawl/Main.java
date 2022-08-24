@@ -93,7 +93,7 @@ public class Main extends Application {
         for (Node button: playerButtons) {
             Button playerBtn = (Button) button;
             playerBtn.setOnAction(ActionEvent2 -> {
-                byte[] byteMap = gdm.getGameStateDaoJdbc().get(playerBtn.getText()).get(0);
+                byte[] byteMap = gdm.getGameStateDaoJdbc().get(playerBtn.getText());
                 int playerId = gdm.getPlayerDao().get(playerBtn.getText());
                 GameMap gameMap = SerializationUtils.deserialize(byteMap);
                 Player player = gameMap.getPlayer();

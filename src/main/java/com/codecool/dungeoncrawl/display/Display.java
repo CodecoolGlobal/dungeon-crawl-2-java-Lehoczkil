@@ -161,31 +161,11 @@ public class Display {
 
     public Scene createInGameMenu (Stage primaryStage) {
 
-        Button continueButton = new Button();
-        continueButton.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        continueButton.setText("CONTINUE");
-        continueButton.setStyle("-fx-font-size: 80");
-        continueButton.setTextFill(Color.CHOCOLATE);
-        continueButton.setId("continueBtn");
+        Button continueButton = createBtn("CONTINUE GAME", "continueBtn");
+        Button exitGame = createBtn("EXIT GAME", "exitBtn");
+        Button exportButton = createBtn("EXPORT GAME", "exportBtn");
 
-        Button exitGame = new Button();
-        exitGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        exitGame.setText("EXIT GAME");
-        exitGame.setStyle("-fx-font-size: 80");
-        exitGame.setTextFill(Color.CHOCOLATE);
-        exitGame.setId("exitBtn");
-
-        Button exportButton = new Button();
-        exportButton.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        exportButton.setText("EXPORT");
-        exportButton.setStyle("-fx-font-size: 80");
-        exportButton.setTextFill(Color.CHOCOLATE);
-        exportButton.setId("exportBtn");
-
-        Label logo = new Label("Rolling Winter Wombat Ltd");
-        logo.setTextFill(Color.CORNSILK);
-        logo.setStyle("-fx-font-size: 60");
-        logo.setPadding(new Insets(50, 0, 0, 0));
+        Label logo = createLogo();
 
         VBox menuPane = new VBox(30, continueButton, exportButton, exitGame, logo);
         menuPane.setPrefWidth(primaryStage.getWidth());
@@ -207,20 +187,18 @@ public class Display {
 
         for (String player: players) {
             Button btn = createBtn(player, "playerBtn");
+            btn.setBackground(new Background(new BackgroundFill(Color.CORNSILK, CornerRadii.EMPTY, null)));
+            btn.setStyle("-fx-font-size: 40");
             btn.setMaxWidth(400.0);
             btn.setMaxHeight(100.0);
-            btn.setStyle("-fx-font-size: 40");
             menuPane.getChildren().add(btn);
         }
 
-        Button backBtn = new Button();
-        backBtn.setBackground(new Background(new BackgroundFill(Color.CORNSILK, CornerRadii.EMPTY, null)));
-        backBtn.setText("BACK");
+        Button backBtn = createBtn("BACK", "backBtn");
+        backBtn.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, null)));
         backBtn.setStyle("-fx-font-size: 40");
-        backBtn.setTextFill(Color.CHOCOLATE);
         backBtn.setMaxWidth(400.0);
         backBtn.setMaxHeight(100.0);
-        backBtn.setId("backBtn");
 
         menuPane.getChildren().add(backBtn);
 

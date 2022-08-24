@@ -20,7 +20,7 @@ CREATE TABLE public.player (
 );
 
 ALTER TABLE ONLY public.game_state
-    ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id);
+    ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id) ON DELETE CASCADE ;
 
 DROP TABLE IF EXISTS public.inventory;
 DROP TABLE IF EXISTS public.items;
@@ -32,4 +32,4 @@ CREATE TABLE public.items (
 );
 
 ALTER TABLE ONLY public.items
-    ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id);
+    ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id) ON DELETE CASCADE ;

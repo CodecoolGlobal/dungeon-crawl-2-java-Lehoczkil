@@ -39,7 +39,7 @@ public class PlayerDaoJdbc implements PlayerDao, Serializable {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "UPDATE player SET hp = ?, x = ?, y = ?" +
                     "WHERE id = ?";
-            PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, player.getHp());
             statement.setInt(2, player.getX());
             statement.setInt(3, player.getY());
@@ -48,7 +48,6 @@ public class PlayerDaoJdbc implements PlayerDao, Serializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
@@ -88,6 +87,19 @@ public class PlayerDaoJdbc implements PlayerDao, Serializable {
             return result;
         } catch (SQLException throwables) {
             throw new RuntimeException(throwables);
+        }
+    }
+
+    public void deletePlayer(int playerId) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "DELETE " +
+                    "FROM player " +
+                    "WHERE id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, playerId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -121,11 +121,7 @@ public class Main extends Application {
     }
 
     private void startGame(String name) {
-        Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
-        scene.setOnKeyPressed(this::onKeyPressed);
-        display.displayGame(primaryStage, scene);
-        canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
-        canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
+        displayGameScreen();
         initPlayer(name);
         PlayerModel model = new PlayerModel(player);
         model.setId(player.getId());
@@ -134,11 +130,7 @@ public class Main extends Application {
     }
 
     private void loadGame(GameMap map, Player player) {
-        Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
-        scene.setOnKeyPressed(this::onKeyPressed);
-        display.displayGame(primaryStage, scene);
-        canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
-        canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
+        displayGameScreen();
         this.map = map;
         this.player = player;
         HashMap<String, Integer> playerItems = gdm.itemsManagerDaoJdbc.getItems(player.getId());
@@ -242,11 +234,7 @@ public class Main extends Application {
 
         Button continueBtn = (Button) menu.lookup("#continueBtn");
         continueBtn.setOnAction(ActionEvent -> {
-            Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
-            scene.setOnKeyPressed(this::onKeyPressed);
-            display.displayGame(primaryStage, scene);
-            canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
-            canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
+            displayGameScreen();
         });
 
         Button exportBtn = (Button) menu.lookup("#exportBtn");
@@ -301,6 +289,7 @@ public class Main extends Application {
                     primaryStage.close();
                 }
             });
+            gdm.getPlayerDao().deletePlayer(player.getId());
             display.displayGame(primaryStage, endGame);
         } else if (map.isLevelOver() && currentMap < 3) {
             map = MapLoader.loadNextLevel(currentMap, player);
@@ -365,6 +354,14 @@ public class Main extends Application {
             player.setHasKey(true);
         }
         player.checkGear();
+    }
+
+    private void displayGameScreen() {
+        Scene scene = display.generateGameWindow(healthLabel, canvas, inventory);
+        scene.setOnKeyPressed(this::onKeyPressed);
+        display.displayGame(primaryStage, scene);
+        canvas.setHeight(2 * displayRange * Tiles.TILE_WIDTH);
+        canvas.setWidth(2 * displayRange * Tiles.TILE_WIDTH);
     }
 
 }

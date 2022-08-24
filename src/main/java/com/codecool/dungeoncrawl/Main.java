@@ -156,7 +156,7 @@ public class Main extends Application {
             nextToPlayer.equals("boss"))) {
                 Enemy enemy = (Enemy) player.getCell().getNeighbor(dx, dy).getActor();
                 player.attack(enemy);
-                if (!enemy.isAlive()) {
+                if (enemy.isDead()) {
                     player.getCell().getNeighbor(dx, dy).setActor(null);
                     if (enemy.getTileName().equals("skeleton")) {
                         player.getCell().getNeighbor(dx, dy).setItem(new Coin(enemy.getCell()));
@@ -331,7 +331,7 @@ public class Main extends Application {
     private void refresh() {
         handleWin();
         moveEnemies();
-        if (!map.getPlayer().isAlive()) {
+        if (map.getPlayer().isDead()) {
             handleLose();
         } else if (map.isLevelOver() && currentMap < 3) {
             map = MapLoader.loadNextLevel(currentMap, player);

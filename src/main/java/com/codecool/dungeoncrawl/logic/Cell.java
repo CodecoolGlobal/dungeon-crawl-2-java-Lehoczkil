@@ -9,12 +9,11 @@ public class Cell implements Drawable, Serializable {
     private CellType type;
     private Actor actor;
     private Item item;
+    private GameMap gameMap;
 
     public GameMap getGameMap() {
         return gameMap;
     }
-
-    private GameMap gameMap;
     private int x, y;
 
     public Cell(GameMap gameMap, int x, int y, CellType type) {

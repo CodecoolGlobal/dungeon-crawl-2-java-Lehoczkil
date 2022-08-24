@@ -17,11 +17,4 @@ public abstract class Item implements Drawable, Serializable {
         return cell;
     }
 
-    public int getX() {
-        return cell.getX();
-    }
-
-    public int getY() {
-        return cell.getY();
-    }
 }

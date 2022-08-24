@@ -71,7 +71,4 @@ public class GameMap implements Serializable {
         return false;
     }
 
-    public Cell[][] getCells() {
-        return cells;
-    }
 }

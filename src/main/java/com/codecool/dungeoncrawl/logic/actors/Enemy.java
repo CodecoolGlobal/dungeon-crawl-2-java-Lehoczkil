@@ -31,10 +31,7 @@ public class Enemy extends Actor{
             if (cell.getActor() != null) {
                 return false;
             } else if (cell.getItem() != null) {
-                if (cell.getItem().getTileName().equals("closed door")) {
-                    return false;
-                }
-                return true;
+                return !cell.getItem().getTileName().equals("closed door");
             } else {
                 return true;
             }

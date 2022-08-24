@@ -30,7 +30,7 @@ public class Player extends Actor {
     }
 
     public boolean isOnItem() {
-        return cell.getItem() != null && cell.getItem().getTileName() != "open door";
+        return cell.getItem() != null && !cell.getItem().getTileName().equals("open door");
     }
 
     public void pickUp(Item item) {
@@ -71,10 +71,11 @@ public class Player extends Actor {
             cell.setActor(null);
             nextCell.setActor(this);
             cell = nextCell;
-        } else if (nextCell.getItem() != null && nextCell.getItem().getTileName() == "closed door" && gdm.itemsManagerDaoJdbc.hasItem("key", id)) {
-            ((Door) nextCell.getItem()).setOpen();
-            gdm.itemsManagerDaoJdbc.decrementItem("key", id);
-            return false;
+        } else if (nextCell.getItem() != null && nextCell.getItem().getTileName().equals("closed door") &&
+                   gdm.itemsManagerDaoJdbc.hasItem("key", id)) {
+                        ((Door) nextCell.getItem()).setOpen();
+                        gdm.itemsManagerDaoJdbc.decrementItem("key", id);
+                        return false;
         }
         return true;
     }

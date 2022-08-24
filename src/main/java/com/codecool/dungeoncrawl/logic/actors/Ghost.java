@@ -37,13 +37,9 @@ public class Ghost extends Enemy{
         }
     }
 
-
     @Override
     protected boolean isValidMove(Cell cell) {
         if (lookForPlayer()) return false;
-        if (cell.getActor() != null) {
-                return false;
-            }
-        return true;
+        return cell.getActor() == null;
     }
 }

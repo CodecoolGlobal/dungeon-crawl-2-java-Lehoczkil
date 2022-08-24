@@ -25,23 +25,18 @@ public abstract class Actor implements Drawable, Serializable {
         }
     }
 
-    public boolean isAlive() {
-        return isAlive;
+    public boolean isDead() {
+        return !isAlive;
     }
 
     protected boolean isValidMove(Cell cell) {
         if (cell.getTileName().equals("floor")) {
             if (cell.getActor() != null) {
-                if (!cell.getActor().getTileName().equals("skeleton") &&
-                    !cell.getActor().getTileName().equals("ghost") &&
-                    !cell.getActor().getTileName().equals("boss")) {
-                        return true;
-                }
+                return !cell.getActor().getTileName().equals("skeleton") &&
+                        !cell.getActor().getTileName().equals("ghost") &&
+                        !cell.getActor().getTileName().equals("boss");
             } else if (cell.getItem() != null) {
-                if (cell.getItem().getTileName().equals("closed door")) {
-                    return false;
-                }
-                return true;
+                return !cell.getItem().getTileName().equals("closed door");
             } else {
                 return true;
             }

@@ -21,7 +21,7 @@ public class GameStateDaoJdbc implements GameStateDao, Serializable {
     public void add(GameState state) {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "INSERT INTO game_state (current_map, saved_at, player_id) VALUES (?, ?, ?)";
-            PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = conn.prepareStatement(sql);
             statement.setBytes(1, state.getCurrentMap());
             statement.setDate(2, state.getSavedAt());
             statement.setInt(3, state.getPlayer().getId());
@@ -37,7 +37,7 @@ public class GameStateDaoJdbc implements GameStateDao, Serializable {
             String sql = "UPDATE game_state " +
                     "SET current_map = ?, saved_at = ? " +
                     "WHERE player_id = ?";
-            PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = conn.prepareStatement(sql);
             statement.setBytes(1, state.getCurrentMap());
             statement.setDate(2, state.getSavedAt());
             statement.setInt(3, state.getPlayer().getId());
@@ -48,7 +48,7 @@ public class GameStateDaoJdbc implements GameStateDao, Serializable {
     }
 
     @Override
-    public List<byte[]> get(String playerName) {
+    public byte[] get(String playerName) {
         try(Connection connection = dataSource.getConnection()) {
             String SQL = "SELECT current_map " +
                     "FROM game_state " +
@@ -57,9 +57,9 @@ public class GameStateDaoJdbc implements GameStateDao, Serializable {
             PreparedStatement statement = connection.prepareStatement(SQL);
             statement.setString(1, playerName);
             ResultSet resultSet = statement.executeQuery();
-            List<byte[]> result = new ArrayList<>();
+            byte[] result = null;
             while (resultSet.next()) {
-                result.add(resultSet.getBytes(1));
+                result = (resultSet.getBytes(1));
             }
             return result;
         } catch (SQLException throwables) {

@@ -236,7 +236,7 @@ public class Main extends Application {
             PlayerModel playerModel = new PlayerModel(player);
             playerModel.setId(player.getId());
             GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), playerModel);
-            Export export = new Export(gameState);
+            Export export = new Export(gameState, primaryStage);
             export.export();
         });
 

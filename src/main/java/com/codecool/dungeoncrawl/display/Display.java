@@ -118,46 +118,17 @@ public class Display {
 
     public Scene createMenu (Stage primaryStage, List<String> players) {
 
-        Button newGame = new Button();
-        newGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        newGame.setText("NEW GAME");
-        newGame.setStyle("-fx-font-size: 80");
-        newGame.setTextFill(Color.CHOCOLATE);
-        newGame.setMaxWidth(1000.0);
-        newGame.setId("gameBtn");
+        Button newGame = createBtn("NEW GAME", "gameBtn");
+        Button exitGame = createBtn("EXIT GAME", "exitBtn");
+        Button loadGame = createBtn("LOAD GAME", "loadBtn");
 
-        Button exitGame = new Button();
-        exitGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        exitGame.setText("EXIT GAME");
-        exitGame.setStyle("-fx-font-size: 80");
-        exitGame.setTextFill(Color.CHOCOLATE);
-        exitGame.setMaxWidth(1000.0);
-        exitGame.setId("exitBtn");
-
-        Button loadGame = new Button();
-        loadGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        loadGame.setText("LOAD GAME");
-        loadGame.setStyle("-fx-font-size: 80");
-        loadGame.setTextFill(Color.CHOCOLATE);
-        loadGame.setMaxWidth(1000.0);
-        loadGame.setId("loadBtn");
         if (players.isEmpty()) {
             loadGame.setDisable(true);
         }
 
-        Button importGame = new Button();
-        importGame.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-        importGame.setText("IMPORT GAME");
-        importGame.setStyle("-fx-font-size: 80");
-        importGame.setTextFill(Color.CHOCOLATE);
-        importGame.setMaxWidth(1000.0);
-        importGame.setId("importBtn");
+        Button importGame = createBtn("IMPORT GAME", "importBtn");
 
-
-        Label logo = new Label("Rolling Winter Wombat Ltd");
-        logo.setTextFill(Color.CORNSILK);
-        logo.setStyle("-fx-font-size: 60");
-        logo.setPadding(new Insets(50, 0, 0, 0));
+        Label logo = createLogo();
 
         VBox menuPane = new VBox(30, newGame, importGame, loadGame, exitGame, logo);
         menuPane.setPrefWidth(primaryStage.getWidth());
@@ -168,6 +139,24 @@ public class Display {
         menuPane.setAlignment(Pos.CENTER);
 
         return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
+    }
+    private Label createLogo() {
+        Label logo = new Label("Rolling Winter Wombat Ltd");
+        logo.setTextFill(Color.CORNSILK);
+        logo.setStyle("-fx-font-size: 60");
+        logo.setPadding(new Insets(50, 0, 0, 0));
+        return logo;
+    }
+
+    private Button createBtn(String content, String id) {
+        Button button = new Button();
+        button.setPrefWidth(1000);
+        button.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+        button.setText(content);
+        button.setStyle("-fx-font-size: 80");
+        button.setTextFill(Color.CHOCOLATE);
+        button.setId(id);
+        return button;
     }
 
     public Scene createInGameMenu (Stage primaryStage) {
@@ -217,14 +206,9 @@ public class Display {
         menuPane.setId("container");
 
         for (String player: players) {
-            Button btn = new Button();
-            btn.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
-            btn.setText(player);
-            btn.setStyle("-fx-font-size: 40");
-            btn.setTextFill(Color.CHOCOLATE);
+            Button btn = createBtn(player, "playerBtn");
             btn.setMaxWidth(400.0);
             btn.setMaxHeight(100.0);
-            btn.setId("playerBtn");
             menuPane.getChildren().add(btn);
         }
 

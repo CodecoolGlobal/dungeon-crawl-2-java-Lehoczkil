@@ -32,7 +32,7 @@ public class Player extends Actor {
     }
 
     public boolean isOnItem() {
-        return cell.getItem() != null && cell.getItem().getTileName() != "open door";
+        return cell.getItem() != null && !cell.getItem().getTileName().equals("open door");
     }
 
     @Override

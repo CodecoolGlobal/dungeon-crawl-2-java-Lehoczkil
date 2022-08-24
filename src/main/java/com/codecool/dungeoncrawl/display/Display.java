@@ -133,7 +133,7 @@ public class Display {
         VBox menuPane = new VBox(30, newGame, importGame, loadGame, exitGame, logo);
         menuPane.setPrefWidth(primaryStage.getWidth());
         menuPane.setPrefHeight(primaryStage.getHeight());
-        menuPane.setStyle("-fx-background-color: #999999");
+        menuPane.setStyle("-fx-background-image: url('rogue.jpg')");
         menuPane.setPrefWidth(1000.0);
 
         menuPane.setAlignment(Pos.CENTER);
@@ -151,12 +151,44 @@ public class Display {
     private Button createBtn(String content, String id) {
         Button button = new Button();
         button.setPrefWidth(1000);
-        button.setStyle("-fx-background-color: " + Color.BLANCHEDALMOND);
+        button.setStyle("-fx-background-color: rgba(125,14,14,0.5);" +
+                        "-fx-font-size: 80;");
+        button.setOnMouseEntered(e -> {
+            button.setStyle("-fx-background-color: rgba(255,255,255,0.5);" +
+                            "-fx-font-size: 80");
+            button.setTextFill(Color.DARKRED);
+        });
+        button.setOnMouseExited(e -> {
+            button.setStyle("-fx-background-color: rgba(125,14,14,0.5);" +
+                    "-fx-font-size: 80");
+            button.setTextFill(Color.WHITE);
+        });
+        button.setTextFill(Color.WHITE);
         button.setText(content);
-        button.setStyle("-fx-font-size: 80");
-        button.setTextFill(Color.CHOCOLATE);
         button.setId(id);
         return button;
+    }
+
+    private void createPlayerBtn(String content, String id, VBox menuPane) {
+        Button btn = new Button();
+        btn.setPrefWidth(400);
+        btn.setMaxHeight(100.0);
+        btn.setStyle("-fx-background-color: rgba(125,14,14,0.5);" +
+                "-fx-font-size: 40;");
+        btn.setOnMouseEntered(e -> {
+            btn.setStyle("-fx-background-color: rgba(255,255,255,0.5);" +
+                    "-fx-font-size: 40");
+            btn.setTextFill(Color.DARKRED);
+        });
+        btn.setOnMouseExited(e -> {
+            btn.setStyle("-fx-background-color: rgba(125,14,14,0.5);" +
+                    "-fx-font-size: 40");
+            btn.setTextFill(Color.WHITE);
+        });
+        btn.setTextFill(Color.WHITE);
+        btn.setText(content);
+        btn.setId(id);
+        menuPane.getChildren().add(btn);
     }
 
     public Scene createInGameMenu (Stage primaryStage) {
@@ -170,7 +202,7 @@ public class Display {
         VBox menuPane = new VBox(30, continueButton, exportButton, exitGame, logo);
         menuPane.setPrefWidth(primaryStage.getWidth());
         menuPane.setPrefHeight(primaryStage.getHeight());
-        menuPane.setStyle("-fx-background-color: #999999");
+        menuPane.setStyle("-fx-background-image: url('rogue.jpg')");
 
         menuPane.setAlignment(Pos.CENTER);
 
@@ -182,25 +214,14 @@ public class Display {
         VBox menuPane = new VBox(30);
         menuPane.setPrefWidth(primaryStage.getWidth());
         menuPane.setPrefHeight(primaryStage.getHeight());
-        menuPane.setStyle("-fx-background-color: #999999");
+        menuPane.setStyle("-fx-background-image: url('rogue.jpg')");
         menuPane.setId("container");
 
         for (String player: players) {
-            Button btn = createBtn(player, "playerBtn");
-            btn.setBackground(new Background(new BackgroundFill(Color.CORNSILK, CornerRadii.EMPTY, null)));
-            btn.setStyle("-fx-font-size: 40");
-            btn.setMaxWidth(400.0);
-            btn.setMaxHeight(100.0);
-            menuPane.getChildren().add(btn);
+            createPlayerBtn(player, "playerBtn", menuPane);
         }
 
-        Button backBtn = createBtn("BACK", "backBtn");
-        backBtn.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, null)));
-        backBtn.setStyle("-fx-font-size: 40");
-        backBtn.setMaxWidth(400.0);
-        backBtn.setMaxHeight(100.0);
-
-        menuPane.getChildren().add(backBtn);
+        createPlayerBtn("BACK", "backBtn", menuPane);
 
         menuPane.setAlignment(Pos.CENTER);
 

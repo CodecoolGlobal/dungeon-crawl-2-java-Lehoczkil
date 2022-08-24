@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.display.Display;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Coin;
@@ -149,11 +150,11 @@ public class Main extends Application {
     }
 
     private void checkForEnemy(int dx, int dy) {
-        String nextToPlayer = player.getCell().getNeighbor(dx, dy).getActor().getTileName();
+        Actor nextToPlayer = player.getCell().getNeighbor(dx, dy).getActor();
         if (player.getCell().getNeighbor(dx, dy).getActor() != null &&
-           (nextToPlayer.equals("skeleton") ||
-            nextToPlayer.equals("ghost") ||
-            nextToPlayer.equals("boss"))) {
+           (nextToPlayer.getTileName().equals("skeleton") ||
+            nextToPlayer.getTileName().equals("ghost") ||
+            nextToPlayer.getTileName().equals("boss"))) {
                 Enemy enemy = (Enemy) player.getCell().getNeighbor(dx, dy).getActor();
                 player.attack(enemy);
                 if (enemy.isDead()) {
@@ -292,6 +293,7 @@ public class Main extends Application {
     }
 
     private void handleLose() {
+
         Scene endGame = display.createEndGameScene(primaryStage);
         endGame.setOnKeyPressed(KeyEvent -> {
             if (KeyEvent.getCode() == KeyCode.ESCAPE) {

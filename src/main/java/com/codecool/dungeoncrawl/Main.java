@@ -72,15 +72,22 @@ public class Main extends Application {
         td.setHeaderText("Choose a name");
         Optional<String> inputName = td.showAndWait();
         inputName.ifPresent(res -> {
-            List<String> playerNames = gdm.getPlayerDao().getPlayerNames();
-            if (playerNames.contains(res)) {
-                Alert takenNameAlert = new Alert(Alert.AlertType.ERROR);
-                takenNameAlert.setHeaderText("Player name error");
-                takenNameAlert.setContentText("Player name already taken");
-                takenNameAlert.show();
+            if (res.length() < 3) {
+                Alert nameTooShortAlert = new Alert(Alert.AlertType.ERROR);
+                nameTooShortAlert.setHeaderText("Player name error");
+                nameTooShortAlert.setContentText("Name should be at least 3 characters");
+                nameTooShortAlert.show();
             } else {
-                primaryStage.close();
-                startGame(inputName.get());
+                List<String> playerNames = gdm.getPlayerDao().getPlayerNames();
+                if (playerNames.contains(res)) {
+                    Alert takenNameAlert = new Alert(Alert.AlertType.ERROR);
+                    takenNameAlert.setHeaderText("Player name error");
+                    takenNameAlert.setContentText("Player name already taken");
+                    takenNameAlert.show();
+                } else {
+                    primaryStage.close();
+                    startGame(inputName.get());
+                }
             }
         });
     }

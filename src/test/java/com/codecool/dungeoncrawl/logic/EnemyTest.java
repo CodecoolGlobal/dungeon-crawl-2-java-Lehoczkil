@@ -1,5 +1,4 @@
 package com.codecool.dungeoncrawl.logic;
-import com.codecool.dungeoncrawl.logic.actors.Boss;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import org.junit.jupiter.api.Test;

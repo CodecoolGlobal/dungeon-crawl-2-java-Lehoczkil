@@ -1,10 +1,8 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.Tiles;
-import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.items.Door;
-import com.codecool.dungeoncrawl.logic.items.Item;
 
 public class Player extends Actor {
     private final int MAX_HEALTH;

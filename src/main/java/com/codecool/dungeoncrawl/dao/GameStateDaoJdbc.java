@@ -20,11 +20,12 @@ public class GameStateDaoJdbc implements GameStateDao, Serializable {
     @Override
     public void add(GameState state) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO game_state (current_map, saved_at, player_id) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO game_state (current_map, mapnumber, saved_at, player_id) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setBytes(1, state.getCurrentMap());
-            statement.setDate(2, state.getSavedAt());
-            statement.setInt(3, state.getPlayer().getId());
+            statement.setInt(2, state.getMapNumber());
+            statement.setDate(3, state.getSavedAt());
+            statement.setInt(4, state.getPlayer().getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -35,12 +36,13 @@ public class GameStateDaoJdbc implements GameStateDao, Serializable {
     public void update(GameState state) {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "UPDATE game_state " +
-                    "SET current_map = ?, saved_at = ? " +
+                    "SET current_map = ?, mapnumber = ?, saved_at = ? " +
                     "WHERE player_id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setBytes(1, state.getCurrentMap());
-            statement.setDate(2, state.getSavedAt());
-            statement.setInt(3, state.getPlayer().getId());
+            statement.setInt(2, state.getMapNumber());
+            statement.setDate(3, state.getSavedAt());
+            statement.setInt(4, state.getPlayer().getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -62,6 +64,21 @@ public class GameStateDaoJdbc implements GameStateDao, Serializable {
                 result = (resultSet.getBytes(1));
             }
             return result;
+        } catch (SQLException throwables) {
+            throw new RuntimeException(throwables);
+        }
+    }
+
+    public int getMapNumber(int id) {
+        try(Connection connection = dataSource.getConnection()) {
+            String SQL = "SELECT mapNumber " +
+                    "FROM game_state " +
+                    "WHERE player_id = ?";
+            PreparedStatement statement = connection.prepareStatement(SQL);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (SQLException throwables) {
             throw new RuntimeException(throwables);
         }

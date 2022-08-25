@@ -64,7 +64,7 @@ public class Main extends Application {
         Player playerToLoad = gameMapToLoad.getPlayer();
         playerToLoad.checkGear();
         primaryStage.close();
-        loadGame(gameMapToLoad, playerToLoad);
+        loadGame(gameMapToLoad, playerToLoad, gameState.getMapNumber());
     }
 
     private void newGameAction() {
@@ -99,7 +99,7 @@ public class Main extends Application {
                 Player player = gameMap.getPlayer();
                 player.setId(playerId);
                 player.checkGear();
-                loadGame(gameMap, player);
+                loadGame(gameMap, player, gdm.getGameStateDaoJdbc().getMapNumber(playerId));
             });
         }
         Button backBtn = (Button) loadMenu.lookup("#backBtn");
@@ -145,14 +145,15 @@ public class Main extends Application {
         initPlayer(name);
         PlayerModel model = new PlayerModel(player);
         model.setId(player.getId());
-        gdm.getGameStateDaoJdbc().add(new GameState(map, new Date(System.currentTimeMillis()), model));
+        gdm.getGameStateDaoJdbc().add(new GameState(map, new Date(System.currentTimeMillis()), model, currentMap));
         refresh();
     }
 
-    private void loadGame(GameMap map, Player player) {
+    private void loadGame(GameMap map, Player player, int mapNumber) {
         setGameScene();
         this.map = map;
         this.player = player;
+        currentMap = mapNumber;
         HashMap<String, Integer> playerItems = gdm.itemsManagerDaoJdbc.getItems(player.getId());
         display.updateInventory(inventory, playerItems);
         refresh();
@@ -254,7 +255,7 @@ public class Main extends Application {
         model.setId(player.getId());
         gdm.getPlayerDao().update(model);
 
-        GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), model);
+        GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), model, currentMap);
         gdm.getGameStateDaoJdbc().update(gameState);
     }
 
@@ -262,7 +263,7 @@ public class Main extends Application {
         saveGame();
         PlayerModel playerModel = new PlayerModel(player);
         playerModel.setId(player.getId());
-        GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), playerModel);
+        GameState gameState = new GameState(map, new Date(System.currentTimeMillis()), playerModel, currentMap);
         Export export = new Export(gameState, primaryStage);
         export.exportGame();
     }
@@ -318,6 +319,7 @@ public class Main extends Application {
                 primaryStage.close();
             }
         });
+        gdm.getPlayerDao().deletePlayer(player.getId());
         display.displayGame(primaryStage, endGame);
     }
 

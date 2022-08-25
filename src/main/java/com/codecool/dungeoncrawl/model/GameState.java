@@ -9,11 +9,16 @@ public class GameState extends BaseModel {
     private byte[] currentMap;
     private PlayerModel player;
 
-    public GameState(GameMap currentMap, Date savedAt, PlayerModel player) {
+    private int mapNumber;
+
+    public GameState(GameMap currentMap, Date savedAt, PlayerModel player, int mapNumber) {
         this.savedAt = savedAt;
         this.player = player;
         serialize(currentMap);
+        this.mapNumber = mapNumber;
     }
+
+
 
     public Date getSavedAt() {
         return savedAt;
@@ -37,5 +42,9 @@ public class GameState extends BaseModel {
 
     public GameMap deSerialize(byte[] map) {
         return SerializationUtils.deserialize(map);
+    }
+
+    public int getMapNumber() {
+        return mapNumber;
     }
 }

@@ -60,11 +60,13 @@ public class Main extends Application {
 
     private void importAction() {
         GameState gameState = new Import(primaryStage).importGame();
-        GameMap gameMapToLoad = gameState.deSerialize(gameState.getCurrentMap());
-        Player playerToLoad = gameMapToLoad.getPlayer();
-        playerToLoad.checkGear();
-        primaryStage.close();
-        loadGame(gameMapToLoad, playerToLoad, gameState.getMapNumber());
+        if (gameState != null) {
+            GameMap gameMapToLoad = gameState.deSerialize(gameState.getCurrentMap());
+            Player playerToLoad = gameMapToLoad.getPlayer();
+            playerToLoad.checkGear();
+            primaryStage.close();
+            loadGame(gameMapToLoad, playerToLoad, gameState.getMapNumber());
+        }
     }
 
     private void newGameAction() {
@@ -96,10 +98,10 @@ public class Main extends Application {
         Scene loadMenu = display.createLoadMenu(primaryStage, players);
         display.displayGame(primaryStage, loadMenu);
         Pane buttons = (Pane) loadMenu.lookup("#container");
-        Set<Node> playerButtons = buttons.lookupAll("#playerBtn");
-        for (Node button: playerButtons) {
+        Set<Node> playerNameButtons = buttons.lookupAll("#playerBtn");
+        for (Node button: playerNameButtons) {
             Button playerBtn = (Button) button;
-            playerBtn.setOnAction(ActionEvent2 -> {
+            playerBtn.setOnAction(ActionEvent -> {
                 byte[] byteMap = gdm.getGameStateDaoJdbc().get(playerBtn.getText());
                 int playerId = gdm.getPlayerDao().get(playerBtn.getText());
                 GameMap gameMap = SerializationUtils.deserialize(byteMap);
@@ -123,6 +125,7 @@ public class Main extends Application {
         List<String> players = gdm.getPlayerDao().getPlayerNames();
 
         Scene menu = display.createMenu(primaryStage, players);
+
         Button importGame = (Button) menu.lookup("#importBtn") ;
         importGame.setOnAction(ActionEvent -> importAction());
 

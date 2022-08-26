@@ -127,19 +127,17 @@ public class Display {
         }
 
         Button importGame = createBtn("IMPORT GAME", "importBtn");
-
         Label logo = createLogo();
 
         VBox menuPane = new VBox(30, newGame, importGame, loadGame, exitGame, logo);
         menuPane.setPrefWidth(primaryStage.getWidth());
         menuPane.setPrefHeight(primaryStage.getHeight());
         menuPane.setStyle("-fx-background-image: url('rogue.jpg')");
-        menuPane.setPrefWidth(1000.0);
-
         menuPane.setAlignment(Pos.CENTER);
 
         return new Scene(menuPane, primaryStage.getWidth(), primaryStage.getHeight());
     }
+
     private Label createLogo() {
         Label logo = new Label("Rolling Winter Wombat Ltd");
         logo.setTextFill(Color.CORNSILK);
@@ -174,15 +172,15 @@ public class Display {
         btn.setPrefWidth(400);
         btn.setMaxHeight(100.0);
         btn.setStyle("-fx-background-color: rgba(125,14,14,0.5);" +
-                "-fx-font-size: 40;");
+                     "-fx-font-size: 40;");
         btn.setOnMouseEntered(e -> {
             btn.setStyle("-fx-background-color: rgba(255,255,255,0.5);" +
-                    "-fx-font-size: 40");
+                         "-fx-font-size: 40");
             btn.setTextFill(Color.DARKRED);
         });
         btn.setOnMouseExited(e -> {
             btn.setStyle("-fx-background-color: rgba(125,14,14,0.5);" +
-                    "-fx-font-size: 40");
+                         "-fx-font-size: 40");
             btn.setTextFill(Color.WHITE);
         });
         btn.setTextFill(Color.WHITE);

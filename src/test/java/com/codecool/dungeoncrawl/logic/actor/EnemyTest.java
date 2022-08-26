@@ -1,4 +1,6 @@
-package com.codecool.dungeoncrawl.logic;
+package com.codecool.dungeoncrawl.logic.actor;
+import com.codecool.dungeoncrawl.logic.CellType;
+import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.actors.Enemy;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import org.junit.jupiter.api.Test;
@@ -6,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EnemyTest {
-    GameMap gameMap = new GameMap(3,3,CellType.FLOOR);
+    GameMap gameMap = new GameMap(3,3, CellType.FLOOR);
 
     @Test
     void creatingEnemyInstanceDoesNotThrowException() {
